@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASCEND — Career RPG</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  if (window.tailwind) tailwind.config = {
+    theme: { extend: {
+      colors: {
+        gold: { 300:'#fde68a', 400:'#fbbf24', 500:'#f5b417', 600:'#d97706' },
+        ink: { 900:'#05070f', 800:'#080b16', 700:'#0c1120' },
+      },
+      fontFamily: {
+        display: ['Sora','sans-serif'],
+        grotesk: ['"Space Grotesk"','sans-serif'],
+        sans: ['Inter','sans-serif'],
+        mono: ['"JetBrains Mono"','monospace'],
+      },
+    } },
+  };
+</script>
+<style>
+  :root{
+    --bg:#05070f; --bg2:#080b18;
+    --panel:rgba(22,30,55,0.72); --panel2:rgba(13,19,40,0.82);
+    --line:rgba(130,156,210,0.16); --line-soft:rgba(130,156,210,0.10);
+    --bright:rgba(56,189,248,0.6);
+    --sky:#38bdf8; --cyan:#22d3ee; --blue:#3b82f6; --indigo:#6366f1; --violet:#8b5cf6; --purple:#a855f7;
+    --gold:#f5b417; --gold2:#fcd34d; --green:#34d399; --red:#fb7185; --orange:#fb923c;
+    --txt:#e9eefb; --dim:#94a2bd; --muted:#5a6a88;
+    --brand:linear-gradient(110deg,#5fd0ff 0%,#7c8cff 48%,#c084fc 100%);
+    --brand2:linear-gradient(120deg,#38bdf8,#8b5cf6);
+    --goldg:linear-gradient(120deg,#fde68a,#f5b417);
+    --shadow:0 24px 60px -24px rgba(0,0,0,0.85);
+    --glow:0 0 0 1px rgba(56,189,248,0.2),0 30px 70px -28px rgba(56,189,248,0.4);
+    --r:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',sans-serif; color:var(--txt); min-height:100vh; overflow-x:hidden;
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(1200px 760px at 8% -12%, rgba(56,130,246,0.28), transparent 56%),
+      radial-gradient(1000px 720px at 98% 0%, rgba(168,85,247,0.24), transparent 56%),
+      radial-gradient(900px 900px at 50% 120%, rgba(34,211,238,0.16), transparent 60%);
+    background-attachment:fixed;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(rgba(120,150,200,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(120,150,200,0.05) 1px,transparent 1px);
+    background-size:48px 48px;
+    -webkit-mask-image:radial-gradient(ellipse 85% 65% at 50% 0%,#000 30%,transparent 78%);
+    mask-image:radial-gradient(ellipse 85% 65% at 50% 0%,#000 30%,transparent 78%);
+  }
+  .font-display{font-family:'Sora',sans-serif;letter-spacing:-0.02em;}
+  .font-grotesk{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em;}
+  .font-mono{font-family:'JetBrains Mono',monospace;}
+  h1,h2,h3{font-family:'Sora',sans-serif;letter-spacing:-0.02em;}
+
+  #particles{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.65;}
+
+  /* gradient + glow text */
+  .grad{background:var(--brand);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:gshift 7s ease infinite;}
+  @keyframes gshift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .grad-gold{background:var(--goldg);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .tg-cyan{text-shadow:0 0 22px rgba(34,211,238,0.7);}
+  .tg-gold{text-shadow:0 0 22px rgba(245,180,23,0.7);}
+  .tg-violet{text-shadow:0 0 22px rgba(168,85,247,0.7);}
+
+  /* glass surfaces */
+  .glass{
+    position:relative;border-radius:var(--r);
+    background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0) 26%),linear-gradient(135deg,var(--panel),var(--panel2));
+    border:1px solid var(--line);
+    box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,0.06);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  }
+  .glass-hover{transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .4s,box-shadow .4s;}
+  .glass-hover::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--brand);opacity:0;transition:opacity .4s;}
+  .glass-hover:hover{transform:translateY(-4px);border-color:var(--bright);box-shadow:var(--shadow),var(--glow);}
+  .glass-hover:hover::before{opacity:.9;}
+  .stat::after{content:'';position:absolute;right:-28px;top:-28px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,0.2),transparent 70%);pointer-events:none;}
+
+  /* sidebar */
+  #sidebar{position:fixed;left:0;top:0;bottom:0;width:236px;z-index:100;display:flex;flex-direction:column;
+    background:linear-gradient(180deg,rgba(8,11,24,0.92),rgba(5,7,15,0.97));border-right:1px solid var(--line);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:transform .3s;}
+  .nav-item{display:flex;align-items:center;gap:11px;margin:2px 12px;padding:11px 14px;border-radius:12px;cursor:pointer;
+    font-size:13.5px;font-weight:600;color:var(--dim);transition:all .22s;position:relative;}
+  .nav-item:hover{background:rgba(56,189,248,0.08);color:#cfe9ff;transform:translateX(2px);}
+  .nav-item.active{background:linear-gradient(90deg,rgba(56,189,248,0.2),rgba(139,92,246,0.1));color:#fff;box-shadow:inset 0 0 0 1px rgba(56,189,248,0.25);}
+  .nav-item.active::before{content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:60%;border-radius:4px;background:var(--brand);box-shadow:0 0 12px rgba(56,189,248,0.9);}
+  .nav-ico{width:20px;text-align:center;font-size:16px;}
+
+  #main{margin-left:236px;min-height:100vh;padding:28px 34px;position:relative;z-index:1;}
+
+  .page{display:none;}
+  .page.active{display:block;animation:pageIn .5s cubic-bezier(.2,.7,.2,1);}
+  @keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* XP bar */
+  .bar{background:rgba(6,10,22,0.9);border-radius:99px;border:1px solid rgba(56,189,248,0.18);overflow:hidden;position:relative;box-shadow:inset 0 1px 4px rgba(0,0,0,0.6);}
+  .bar > i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#38bdf8,#22d3ee 40%,#8b5cf6 80%,#a855f7);background-size:200% 100%;animation:flow 4s linear infinite;transition:width .9s cubic-bezier(.4,0,.2,1);position:relative;box-shadow:0 0 14px rgba(56,189,248,0.55);}
+  @keyframes flow{0%{background-position:0 50%}100%{background-position:200% 50%}}
+  .bar > i::after{content:'';position:absolute;inset:0;background-image:linear-gradient(115deg,transparent 0 42%,rgba(255,255,255,0.28) 50%,transparent 58% 100%);background-size:34px 100%;animation:stripes 1.1s linear infinite;}
+  @keyframes stripes{from{background-position:0 0}to{background-position:34px 0}}
+  .bar.gold > i{background:linear-gradient(90deg,#f5b417,#fcd34d);box-shadow:0 0 14px rgba(245,180,23,0.6);}
+
+  /* buttons */
+  .btn{position:relative;overflow:hidden;isolation:isolate;border:none;border-radius:12px;padding:11px 20px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .25s cubic-bezier(.2,.7,.2,1);color:#fff;}
+  .btn::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,0.4) 50%,transparent 65%);transform:translateX(-130%);transition:transform .6s;}
+  .btn:hover::after{transform:translateX(130%);}
+  .btn-sky{background:linear-gradient(135deg,#38bdf8,#6366f1);box-shadow:0 10px 26px -10px rgba(56,189,248,0.7);}
+  .btn-sky:hover{transform:translateY(-2px);box-shadow:0 16px 36px -12px rgba(56,189,248,0.8);}
+  .btn-gold{background:linear-gradient(135deg,#fcd34d,#f5b417);color:#2a1800;box-shadow:0 10px 26px -10px rgba(245,180,23,0.7);}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 36px -12px rgba(245,180,23,0.8);}
+  .btn-violet{background:linear-gradient(135deg,#8b5cf6,#d946ef);box-shadow:0 10px 26px -10px rgba(168,85,247,0.7);}
+  .btn-violet:hover{transform:translateY(-2px);}
+  .btn-danger{background:linear-gradient(135deg,#fb7185,#e11d48);box-shadow:0 10px 26px -10px rgba(225,29,72,0.6);}
+  .btn-danger:hover{transform:translateY(-2px);}
+  .btn-ghost{background:rgba(56,189,248,0.08);border:1px solid var(--line);color:var(--txt);}
+  .btn-ghost:hover{border-color:var(--bright);background:rgba(56,189,248,0.14);}
+
+  /* chips / badges */
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:99px;font-size:11.5px;font-weight:700;letter-spacing:.2px;}
+  .label{font-size:10.5px;text-transform:uppercase;letter-spacing:1.4px;font-weight:700;color:var(--dim);}
+
+  /* task check */
+  .check{width:24px;height:24px;border-radius:8px;border:2px solid rgba(56,189,248,0.5);background:rgba(6,10,22,0.6);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s cubic-bezier(.2,.7,.2,1);}
+  .check:hover{border-color:var(--sky);box-shadow:0 0 12px rgba(56,189,248,0.4);}
+  .check.on{background:linear-gradient(135deg,#22d3ee,#8b5cf6);border-color:transparent;box-shadow:0 0 16px rgba(56,189,248,0.6);}
+  .check.on::after{content:'✓';color:#fff;font-size:14px;font-weight:800;}
+  .task-row{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:12px;border:1px solid var(--line-soft);background:rgba(10,15,30,0.4);transition:all .25s;}
+  .task-row:hover{border-color:var(--line);background:rgba(56,189,248,0.05);}
+  .task-row.done{opacity:.55;}
+  .task-row.done .ttxt{text-decoration:line-through;}
+
+  /* skill nodes */
+  .snode{border-radius:13px;padding:12px 14px;cursor:pointer;font-size:12.5px;font-weight:600;border:1px solid;transition:all .3s cubic-bezier(.2,.7,.2,1);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .snode.locked{border-color:rgba(90,106,136,0.4);color:var(--muted);background:rgba(18,26,46,0.5);}
+  .snode.unlocked{border-color:rgba(56,189,248,0.45);color:#8fdcff;background:linear-gradient(135deg,rgba(56,189,248,0.14),rgba(56,189,248,0.04));}
+  .snode.mastered{border-color:rgba(245,180,23,0.55);color:var(--gold2);background:linear-gradient(135deg,rgba(245,180,23,0.16),rgba(245,180,23,0.04));box-shadow:0 0 18px rgba(245,180,23,0.18);}
+  .snode:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 0 26px rgba(56,189,248,0.32);}
+  .snode.mastered:hover{box-shadow:0 0 28px rgba(245,180,23,0.4);}
+
+  /* week map */
+  .wnode{width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;cursor:pointer;border:2px solid;transition:all .35s cubic-bezier(.2,.7,.2,1);position:relative;flex-shrink:0;}
+  .wnode.done{border-color:rgba(52,211,153,0.6);background:radial-gradient(circle at 50% 30%,rgba(52,211,153,0.3),rgba(11,16,34,0.9));color:#6ee7b7;}
+  .wnode.current{border-color:var(--gold);background:radial-gradient(circle at 50% 30%,rgba(245,180,23,0.32),rgba(11,16,34,0.9));color:var(--gold2);animation:pgold 2s infinite;}
+  .wnode.locked{border-color:rgba(90,106,136,0.5);background:rgba(15,22,42,0.6);color:var(--muted);cursor:not-allowed;}
+  @keyframes pgold{0%,100%{box-shadow:0 0 14px rgba(245,180,23,0.35)}50%{box-shadow:0 0 36px rgba(245,180,23,0.7)}}
+  .wlink{flex:1;height:3px;border-radius:4px;background:rgba(90,106,136,0.3);min-width:20px;}
+  .wlink.done{background:linear-gradient(90deg,#34d399,#38bdf8);}
+
+  /* day cards */
+  .day{border-radius:15px;padding:16px 18px;margin-bottom:13px;cursor:pointer;border:1px solid var(--line);border-left:3px solid rgba(56,189,248,0.45);transition:all .35s cubic-bezier(.2,.7,.2,1);
+    background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0) 36%),linear-gradient(135deg,var(--panel),var(--panel2));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+  .day:hover{transform:translateX(6px);border-left-color:var(--sky);box-shadow:var(--shadow);}
+  .day.interview{border-left-color:var(--gold);}
+  .day.weekend{border-left-color:var(--violet);}
+  .day.today{border-color:rgba(245,180,23,0.45);border-left-color:var(--gold);box-shadow:0 0 30px -8px rgba(245,180,23,0.4);}
+
+  /* status badges */
+  .st{border-radius:99px;padding:3px 11px;font-size:11px;font-weight:700;}
+  .st-wishlist{background:rgba(100,116,139,0.18);color:#aab6c8;border:1px solid rgba(100,116,139,0.5);}
+  .st-applied{background:rgba(56,189,248,0.16);color:#7dd3fc;border:1px solid rgba(56,189,248,0.5);}
+  .st-recruiter{background:rgba(45,212,191,0.16);color:#5eead4;border:1px solid rgba(45,212,191,0.5);}
+  .st-screening{background:rgba(168,85,247,0.16);color:#d8b4fe;border:1px solid rgba(168,85,247,0.5);}
+  .st-interview{background:rgba(245,180,23,0.16);color:#fcd34d;border:1px solid rgba(245,180,23,0.5);}
+  .st-offer{background:rgba(52,211,153,0.16);color:#6ee7b7;border:1px solid rgba(52,211,153,0.5);}
+  .st-rejected{background:rgba(251,113,133,0.16);color:#fda4af;border:1px solid rgba(251,113,133,0.5);}
+  .st-closed{background:rgba(90,106,136,0.16);color:#94a2bd;border:1px solid rgba(90,106,136,0.5);}
+
+  /* table */
+  table{border-collapse:collapse;width:100%;}
+  th{font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--dim);padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  td{padding:12px 14px;border-bottom:1px solid var(--line-soft);font-size:13px;}
+  tr:hover td{background:rgba(56,189,248,0.05);}
+
+  /* inputs */
+  input,select,textarea{background:rgba(6,10,22,0.7);border:1px solid var(--line);border-radius:11px;color:var(--txt);padding:10px 13px;font-family:'Inter',sans-serif;font-size:14px;width:100%;transition:border-color .2s,box-shadow .2s;}
+  input::placeholder,textarea::placeholder{color:var(--muted);}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--bright);box-shadow:0 0 0 3px rgba(56,189,248,0.16);background:rgba(6,10,22,0.9);}
+  select option{background:#0b1022;}
+  label.fld{display:block;font-size:11.5px;color:var(--dim);margin-bottom:5px;font-weight:600;}
+
+  /* scrollbar */
+  ::-webkit-scrollbar{width:9px;height:9px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:rgba(56,189,248,0.25);border-radius:99px;border:2px solid transparent;background-clip:padding-box;}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(56,189,248,0.55);background-clip:padding-box;}
+  ::selection{background:rgba(56,189,248,0.3);color:#fff;}
+
+  /* overlays */
+  .overlay{position:fixed;inset:0;z-index:9990;display:none;align-items:center;justify-content:center;background:rgba(3,5,12,0.82);backdrop-filter:blur(8px);}
+  .overlay.show{display:flex;animation:fade .3s;}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{max-width:480px;width:92%;text-align:center;padding:38px 30px;}
+  .toast{position:fixed;top:22px;right:22px;z-index:9995;min-width:290px;display:none;padding:18px 20px;border-radius:16px;
+    background:linear-gradient(135deg,rgba(26,10,46,0.96),rgba(10,16,38,0.96));border:1px solid rgba(168,85,247,0.55);box-shadow:0 0 44px rgba(168,85,247,0.35);}
+  .toast.show{display:block;animation:slideIn .45s cubic-bezier(.2,.7,.2,1);}
+  @keyframes slideIn{from{transform:translateX(120px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+  .xpfx{position:fixed;pointer-events:none;z-index:9999;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:var(--gold2);text-shadow:0 0 20px var(--gold);animation:xpf 1.4s ease-out forwards;}
+  @keyframes xpf{0%{opacity:1;transform:translateY(0) scale(1)}40%{opacity:1;transform:translateY(-44px) scale(1.25)}100%{opacity:0;transform:translateY(-90px) scale(.8)}}
+  .confetti{position:fixed;width:11px;height:11px;border-radius:2px;pointer-events:none;z-index:9998;animation:cf 2.4s ease-in forwards;}
+  @keyframes cf{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+  .flame{display:inline-block;animation:flick .5s ease-in-out infinite alternate;}
+  @keyframes flick{from{transform:scale(1) rotate(-4deg);filter:brightness(1)}to{transform:scale(1.12) rotate(4deg);filter:brightness(1.35)}}
+  .float{animation:fl 3.4s ease-in-out infinite;}
+  @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .ring-bg{stroke:rgba(56,189,248,0.12);}
+  .ring-fg{stroke-linecap:round;transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 0 6px rgba(56,189,248,0.6));}
+
+  #mobilenav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;padding:10px 6px 14px;
+    background:linear-gradient(180deg,rgba(8,11,24,0.7),rgba(5,6,14,0.97));border-top:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
+  #mobilenav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--dim);flex:1;background:none;border:none;cursor:pointer;}
+  #mobilenav button.active{color:var(--sky);}
+  #menuBtn{display:none;}
+  @media(max-width:860px){
+    #sidebar{transform:translateX(-100%);width:80%;max-width:300px;}
+    #sidebar.open{transform:translateX(0);}
+    #main{margin-left:0;padding:74px 16px 96px;}
+    #mobilenav{display:flex;}
+    #menuBtn{display:flex;position:fixed;top:14px;left:14px;z-index:150;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
+
+  /* ===== Self-contained utility fallback (works even if Tailwind CDN is blocked) ===== */
+  .flex{display:flex;} .grid{display:grid;} .block{display:block;} .hidden{display:none!important;}
+  .flex-col{flex-direction:column;} .flex-wrap{flex-wrap:wrap;} .flex-1{flex:1 1 0%;} .flex-shrink-0{flex-shrink:0;}
+  .items-center{align-items:center;} .items-end{align-items:flex-end;} .items-start{align-items:flex-start;}
+  .justify-between{justify-content:space-between;} .justify-center{justify-content:center;} .justify-around{justify-content:space-around;}
+  .grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr));} .grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr));} .grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .col-span-2{grid-column:span 2/span 2;}
+  .gap-1{gap:.25rem;} .gap-2{gap:.5rem;} .gap-2\.5{gap:.625rem;} .gap-3{gap:.75rem;} .gap-4{gap:1rem;} .gap-5{gap:1.25rem;} .gap-6{gap:1.5rem;}
+  .space-y-0>*+*{margin-top:0;} .space-y-2>*+*{margin-top:.5rem;} .space-y-2\.5>*+*{margin-top:.625rem;} .space-y-4>*+*{margin-top:1rem;} .space-y-5>*+*{margin-top:1.25rem;}
+  .w-full{width:100%;} .h-full{height:100%;} .min-w-0{min-width:0;} .min-w-\[220px\]{min-width:220px;}
+  .mx-auto{margin-left:auto;margin-right:auto;} .max-w-xl{max-width:36rem;} .max-w-4xl{max-width:56rem;} .max-h-\[52vh\]{max-height:52vh;}
+  .overflow-y-auto{overflow-y:auto;} .overflow-x-auto{overflow-x:auto;}
+  .p-3{padding:.75rem;} .p-5{padding:1.25rem;} .p-6{padding:1.5rem;} .p-7{padding:1.75rem;}
+  .px-4{padding-left:1rem;padding-right:1rem;} .px-5{padding-left:1.25rem;padding-right:1.25rem;} .px-10{padding-left:2.5rem;padding-right:2.5rem;} .px-12{padding-left:3rem;padding-right:3rem;}
+  .py-1{padding-top:.25rem;padding-bottom:.25rem;} .py-1\.5{padding-top:.375rem;padding-bottom:.375rem;} .py-2{padding-top:.5rem;padding-bottom:.5rem;} .py-3{padding-top:.75rem;padding-bottom:.75rem;} .py-4{padding-top:1rem;padding-bottom:1rem;} .py-6{padding-top:1.5rem;padding-bottom:1.5rem;}
+  .pt-3{padding-top:.75rem;} .pt-5{padding-top:1.25rem;} .pb-1{padding-bottom:.25rem;} .pb-2{padding-bottom:.5rem;} .pb-4{padding-bottom:1rem;} .pr-1{padding-right:.25rem;}
+  .mt-0\.5{margin-top:.125rem;} .mt-1{margin-top:.25rem;} .mt-1\.5{margin-top:.375rem;} .mt-2{margin-top:.5rem;} .mt-2\.5{margin-top:.625rem;} .mt-3{margin-top:.75rem;} .mt-4{margin-top:1rem;} .mt-5{margin-top:1.25rem;} .mt-6{margin-top:1.5rem;}
+  .mb-1{margin-bottom:.25rem;} .mb-1\.5{margin-bottom:.375rem;} .mb-2{margin-bottom:.5rem;} .mb-3{margin-bottom:.75rem;} .mb-4{margin-bottom:1rem;} .mb-5{margin-bottom:1.25rem;} .mb-6{margin-bottom:1.5rem;} .mb-7{margin-bottom:1.75rem;} .ml-2{margin-left:.5rem;}
+  .text-\[10px\]{font-size:10px;line-height:1.3;} .text-\[11px\]{font-size:11px;line-height:1.3;}
+  .text-xs{font-size:.75rem;line-height:1rem;} .text-sm{font-size:.875rem;line-height:1.3rem;} .text-base{font-size:1rem;line-height:1.5rem;}
+  .text-lg{font-size:1.125rem;line-height:1.6rem;} .text-xl{font-size:1.25rem;line-height:1.75rem;} .text-2xl{font-size:1.5rem;line-height:2rem;}
+  .text-3xl{font-size:1.875rem;line-height:2.25rem;} .text-4xl{font-size:2.25rem;line-height:2.5rem;} .text-5xl{font-size:3rem;line-height:1.1;} .text-6xl{font-size:3.75rem;line-height:1;} .text-7xl{font-size:4.5rem;line-height:1;}
+  .font-normal{font-weight:400;} .font-semibold{font-weight:600;} .font-bold{font-weight:700;} .font-extrabold{font-weight:800;}
+  .font-sans{font-family:'Inter',sans-serif;}
+  .text-center{text-align:center;} .text-left{text-align:left;} .text-right{text-align:right;}
+  .text-white{color:#fff;}
+  .rounded-xl{border-radius:.75rem;} .truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .uppercase{text-transform:uppercase;} .tracking-widest{letter-spacing:.1em;} .tracking-\[3px\]{letter-spacing:3px;} .tracking-\[2\.5px\]{letter-spacing:2.5px;}
+  @media(min-width:768px){
+    .md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr));} .md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr));} .md\:col-span-2{grid-column:span 2/span 2;}
+  }
+  @media(min-width:1024px){
+    .lg\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr));} .lg\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr));} .lg\:col-span-2{grid-column:span 2/span 2;}
+  }
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<!-- Mobile menu button -->
+<button id="menuBtn" class="glass" onclick="toggleSidebar()">☰</button>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div class="px-5 pt-5 pb-4" style="border-bottom:1px solid var(--line)">
+    <div class="font-display font-extrabold text-xl grad">ASCEND</div>
+    <div class="text-[11px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted)">Career RPG OS</div>
+  </div>
+  <div class="px-4 py-4" style="border-bottom:1px solid var(--line)">
+    <div class="flex items-center gap-3">
+      <div style="width:46px;height:46px;border-radius:14px;background:var(--brand2);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 20px rgba(56,189,248,0.5)">⚔️</div>
+      <div class="min-w-0">
+        <div class="font-grotesk font-bold text-white truncate" id="sb-name">Player</div>
+        <div class="text-xs font-mono" style="color:var(--cyan)" id="sb-rank">Lvl 1</div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <div class="flex justify-between text-[11px] mb-1 font-mono" style="color:var(--dim)">
+        <span id="sb-xp">0 XP</span><span id="sb-xpnext" style="color:var(--muted)"></span>
+      </div>
+      <div class="bar" style="height:8px"><i id="sb-bar" style="width:0%"></i></div>
+    </div>
+  </div>
+  <div class="flex-1 overflow-y-auto py-3" id="navlist"></div>
+  <div class="px-5 py-4" style="border-top:1px solid var(--line)">
+    <div class="flex items-center gap-3">
+      <span class="flame text-xl">🔥</span>
+      <div><div class="text-[11px]" style="color:var(--dim)">Daily Streak</div>
+        <div class="font-grotesk font-bold" style="color:var(--orange)" id="sb-streak">0 Days</div></div>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile nav -->
+<nav id="mobilenav"></nav>
+
+<!-- Overlays -->
+<div class="overlay" id="ov-level">
+  <div class="modal glass">
+    <div class="text-7xl float">⚡</div>
+    <div class="font-display font-extrabold text-5xl grad mt-2">LEVEL UP!</div>
+    <div class="font-grotesk text-2xl grad-gold mt-2" id="lu-level">Level 2</div>
+    <div class="mt-2" style="color:var(--dim)" id="lu-rank">New rank unlocked</div>
+    <div class="mt-5 p-3 rounded-xl text-sm" style="background:rgba(56,189,248,0.08);border:1px solid var(--line);color:var(--cyan)" id="lu-unlock"></div>
+    <button class="btn btn-gold w-full mt-6 py-3 text-lg" onclick="closeOverlay('ov-level')">CONTINUE ⚔️</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov-generic"><div class="modal glass" id="ov-generic-body"></div></div>
+
+<div class="toast" id="toast">
+  <div class="flex items-center gap-3">
+    <div class="text-4xl" id="t-ico">🏆</div>
+    <div class="text-left"><div class="text-[11px] uppercase tracking-widest font-bold" style="color:var(--purple)" id="t-kicker">Achievement Unlocked</div>
+      <div class="font-grotesk font-bold text-white text-sm mt-0.5" id="t-title"></div>
+      <div class="text-xs mt-0.5" style="color:var(--dim)" id="t-desc"></div></div>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <!-- DASHBOARD -->
+  <section class="page active" id="page-dashboard">
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+      <div><h1 class="font-display font-extrabold text-3xl grad">Command Center</h1>
+        <div class="text-sm mt-1" style="color:var(--dim)" id="dash-greet"></div></div>
+      <button class="btn btn-gold" onclick="showPage('spin')">🎡 Daily Spin <span id="spin-dot"></span></button>
+    </div>
+    <div id="dash-hero" class="mb-5"></div>
+    <div id="dash-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5"></div>
+    <div class="grid lg:grid-cols-3 gap-5 mb-5">
+      <div class="lg:col-span-2 glass glass-hover p-5">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div class="font-grotesk font-bold text-white flex items-center gap-2">📅 Today's Mission <span class="text-xs font-sans font-normal" style="color:var(--dim)" id="today-label"></span></div>
+          <div class="flex items-center gap-2"><span class="text-xs font-mono" style="color:var(--dim)" id="today-xp"></span><span class="chip" style="background:rgba(56,189,248,0.12);color:var(--cyan)" id="today-pct">0%</span></div>
+        </div>
+        <div id="today-tasks" class="space-y-2"></div>
+        <div id="today-clear" class="hidden mt-4 p-3 rounded-xl text-center font-grotesk text-sm" style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.4);color:var(--green)">🎉 DAILY CLEAR — Bonus +60 XP!</div>
+      </div>
+      <div class="space-y-5">
+        <div class="glass glass-hover p-5"><div class="label mb-3">Weekly XP</div><canvas id="ch-weekly" height="150"></canvas></div>
+        <div class="glass glass-hover p-5" id="dash-quest"></div>
+      </div>
+    </div>
+    <div class="grid lg:grid-cols-3 gap-5">
+      <div class="glass glass-hover p-5"><div class="label mb-3">Skill Mastery</div><canvas id="ch-skills" height="200"></canvas></div>
+      <div class="glass glass-hover p-5"><div class="label mb-3">Daily XP Trend</div><canvas id="ch-daily" height="200"></canvas></div>
+      <div class="glass glass-hover p-5"><div class="label mb-3">Application Funnel</div><div id="dash-funnel" class="mt-2 space-y-2.5"></div></div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="page" id="page-roadmap">
+    <div class="mb-5"><h1 class="font-display font-extrabold text-3xl grad">Journey Map</h1>
+      <div class="text-sm mt-1" style="color:var(--dim)">June 6 → July 6, 2026 · your day-by-day path to International Backend + AI Infra Engineer</div></div>
+    <div class="glass p-5 mb-5"><div class="label mb-4">Progression Map</div><div id="week-map" class="flex items-center gap-1 overflow-x-auto pb-2"></div></div>
+    <div id="roadmap-body"></div>
+  </section>
+
+  <!-- QUESTS -->
+  <section class="page" id="page-quests">
+    <div class="mb-5"><h1 class="font-display font-extrabold text-3xl grad">Quest Board</h1>
+      <div class="text-sm mt-1" style="color:var(--dim)">Complete quests to earn massive XP and unlock your future</div></div>
+    <div class="mb-6"><div class="label mb-3">⭐ Main Quests</div><div id="quests-main" class="grid md:grid-cols-2 gap-4"></div></div>
+    <div><div class="label mb-3">🗡️ Side Quests</div><div id="quests-side" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div></div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="page" id="page-skills">
+    <div class="mb-5"><h1 class="font-display font-extrabold text-3xl grad">Skill Tree</h1>
+      <div class="text-sm mt-1" style="color:var(--dim)">Tap a node to advance: Locked → Unlocked (+15 XP) → Mastered (+50 XP)</div></div>
+    <div id="skills-body" class="grid md:grid-cols-2 gap-5"></div>
+  </section>
+
+  <!-- APPLICATIONS -->
+  <section class="page" id="page-applications">
+    <div class="mb-5"><h1 class="font-display font-extrabold text-3xl grad">Applications</h1>
+      <div class="text-sm mt-1" style="color:var(--dim)">Track every move · India 5 XP · International 10 XP</div></div>
+    <div id="app-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5"></div>
+    <div class="glass p-5 mb-5">
+      <div class="label mb-4">＋ Log Application</div>
+      <div class="grid md:grid-cols-3 gap-3">
+        <div><label class="fld">Company *</label><input id="ap-company" placeholder="e.g. Stripe"></div>
+        <div><label class="fld">Role *</label><input id="ap-role" placeholder="Backend Engineer"></div>
+        <div><label class="fld">Country</label><input id="ap-country" placeholder="India / UK / Netherlands…"></div>
+        <div><label class="fld">Status</label><select id="ap-status"></select></div>
+        <div><label class="fld">Salary</label><input id="ap-salary" placeholder="₹/€/£"></div>
+        <div><label class="fld">Source</label><select id="ap-source"></select></div>
+        <div><label class="fld">Applied Date</label><input id="ap-date" type="date"></div>
+        <div><label class="fld">Visa Sponsorship</label><select id="ap-visa"><option>Unknown</option><option>Yes</option><option>No</option></select></div>
+        <div><label class="fld">Notes</label><input id="ap-notes" placeholder="optional"></div>
+      </div>
+      <button class="btn btn-sky mt-4" onclick="addApplication()">＋ Add Application</button>
+    </div>
+    <div class="glass p-3 overflow-x-auto"><table id="app-table"></table></div>
+  </section>
+
+  <!-- CRM -->
+  <section class="page" id="page-crm">
+    <div class="mb-5"><h1 class="font-display font-extrabold text-3xl grad">Recruiter CRM</h1>
+      <div class="text-sm mt-1" style="color:var(--dim)">Never lose a connection · each contact +10 XP</div></div>
+    <div class="glass p-5 mb-5">
+      <div class="label mb-4">＋ Add Recruiter</div>
+      <div class="grid md:grid-cols-3 gap-3">
+        <div><label class="fld">Name *</label><input id="cr-name" placeholder="Recruiter name"></div>
+        <div><label class="fld">Company</label><input id="cr-company"></div>
+        <div><label class="fld">Country</label><input id="cr-country"></div>
+        <div><label class="fld">Status</label><select id="cr-status"><option>To Contact</option><option>Messaged</option><option>Responded</option><option>In Touch</option><option>Closed</option></select></div>
+        <div><label class="fld">LinkedIn URL</label><input id="cr-linkedin" placeholder="https://"></div>
+        <div><label class="fld">Last Contact</label><input id="cr-date" type="date"></div>
+        <div class="md:col-span-3"><label class="fld">Notes</label><input id="cr-notes"></div>
+      </div>
+      <button class="btn btn-sky mt-4" onclick="addRecruiter()">＋ Add Recruiter</button>
+    </div>
+    <div class="glass p-3 overflow-x-auto"><table id="crm-table"></table></div>
+  </section>
+
+  <!-- BOSS -->
+  <section class="page" id="page-boss">
+    <div class="mb-5"><h1 class="font-display font-extrabold text-3xl grad">Weekly Boss Fight</h1>
+      <div class="text-sm mt-1" style="color:var(--dim)">Defeat the boss with 70%+ to unlock the next week</div></div>
+    <div id="boss-body"></div>
+  </section>
+
+  <!-- ACHIEVEMENTS -->
+  <section class="page" id="page-achievements">
+    <div class="mb-5"><h1 class="font-display font-extrabold text-3xl grad">Achievement Wall</h1>
+      <div class="text-sm mt-1" style="color:var(--dim)"><span id="ach-count">0</span> trophies earned</div></div>
+    <div id="ach-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+  </section>
+
+  <!-- SPIN -->
+  <section class="page" id="page-spin">
+    <div class="mb-5"><h1 class="font-display font-extrabold text-3xl grad">Fortune Wheel</h1>
+      <div class="text-sm mt-1" style="color:var(--dim)">Spin once per day for bonus rewards</div></div>
+    <div class="glass p-7 max-w-xl mx-auto text-center">
+      <div style="position:relative;display:inline-block">
+        <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:26px solid var(--gold2);filter:drop-shadow(0 0 8px var(--gold));z-index:10"></div>
+        <canvas id="wheel" width="340" height="340"></canvas>
+      </div>
+      <div class="mt-6"><button class="btn btn-violet text-lg px-10 py-3" id="spin-btn" onclick="spinWheel()">SPIN!</button></div>
+      <div class="mt-4 text-sm" style="color:var(--dim)" id="spin-msg"></div>
+    </div>
+  </section>
+
+  <!-- REPORTS -->
+  <section class="page" id="page-reports">
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+      <div><h1 class="font-display font-extrabold text-3xl grad">Reports</h1>
+        <div class="text-sm mt-1" style="color:var(--dim)">Your career analytics & momentum</div></div>
+      <div class="flex gap-2"><button class="btn btn-ghost" onclick="renderReports('week')">Weekly</button><button class="btn btn-ghost" onclick="renderReports('month')">Monthly</button></div>
+    </div>
+    <div id="reports-body"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="page" id="page-settings">
+    <div class="mb-5"><h1 class="font-display font-extrabold text-3xl grad">Settings</h1>
+      <div class="text-sm mt-1" style="color:var(--dim)">Manage your profile and progress data</div></div>
+    <div class="grid md:grid-cols-2 gap-5 max-w-4xl">
+      <div class="glass p-5">
+        <div class="label mb-4">Player Profile</div>
+        <label class="fld">Name</label><input id="set-name">
+        <label class="fld mt-3">Title</label><input id="set-title">
+        <button class="btn btn-sky mt-4" onclick="saveProfile()">Save Profile</button>
+      </div>
+      <div class="glass p-5">
+        <div class="label mb-4">Data Management</div>
+        <button class="btn btn-sky w-full mb-3" onclick="exportData()">⬇️ Export Progress JSON</button>
+        <label class="fld">Import Progress JSON</label><input type="file" id="set-import" accept="application/json" onchange="importData(event)">
+        <button class="btn btn-danger w-full mt-4" onclick="resetData()">⚠️ Reset All Progress</button>
+      </div>
+      <div class="glass p-5 md:col-span-2">
+        <div class="label mb-4">Manual XP (dev / catch-up)</div>
+        <div class="grid grid-cols-3 gap-3 items-end">
+          <div><label class="fld">XP Amount</label><input id="set-xp" type="number" value="50"></div>
+          <div class="col-span-2"><label class="fld">Reason</label><input id="set-xp-reason" placeholder="e.g. GitHub push"></div>
+        </div>
+        <button class="btn btn-gold mt-4" onclick="manualXP()">✦ Award XP</button>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+/* ===================== DATA (JSON-driven) ===================== */
+const CONFIG = {
+  storageKey: 'ascend_career_rpg_v1',
+  player: { name: 'Jayan', title: 'Senior Backend Engineer' },
+  xp: { indiaApp:5, intlApp:10, recruiter:10, easy:20, medium:40, hard:75, python:50, sysdesign:60, interview:150, github:100, linkedin:50, dailyClear:60, skillUnlock:15, skillMaster:50 },
+  ranks: ['Initiate','Code Apprentice','Code Adept','Mid Engineer','Senior Engineer','Staff Engineer','Systems Architect','Backend + AI Engineer','Principal Engineer','International AI Infra Engineer','Legendary Engineer'],
+  unlocks: ['','Quest Board access','Skill Tree: Backend','Application Funnel','Recruiter CRM','Skill Tree: Distributed','Boss Fight: Week 2','Skill Tree: AI Infra','Reports Analytics','Global Recruiter Network','Ascended status'],
+};
+const NAV = [
+  {g:'Main'}, {id:'dashboard',ic:'🏠',t:'Dashboard'}, {id:'roadmap',ic:'🗺️',t:'Roadmap'}, {id:'quests',ic:'⚔️',t:'Quests'}, {id:'skills',ic:'🌳',t:'Skill Tree'},
+  {g:'Career'}, {id:'applications',ic:'📨',t:'Applications'}, {id:'crm',ic:'🤝',t:'Recruiter CRM'},
+  {g:'Game'}, {id:'boss',ic:'👾',t:'Boss Fight'}, {id:'achievements',ic:'🏆',t:'Achievements'}, {id:'spin',ic:'🎡',t:'Spin Wheel'},
+  {g:'Insight'}, {id:'reports',ic:'📊',t:'Reports'}, {id:'settings',ic:'⚙️',t:'Settings'},
+];
+const MOBNAV = [{id:'dashboard',ic:'🏠',t:'Home'},{id:'roadmap',ic:'🗺️',t:'Map'},{id:'applications',ic:'📨',t:'Apply'},{id:'boss',ic:'👾',t:'Boss'},{id:'skills',ic:'🌳',t:'Skills'}];
+const CAT = {
+  algo:{c:'#22d3ee',n:'Algorithms'}, apply:{c:'#34d399',n:'Apply'}, recruiter:{c:'#2dd4bf',n:'Outreach'}, resume:{c:'#38bdf8',n:'Resume'},
+  linkedin:{c:'#60a5fa',n:'LinkedIn'}, github:{c:'#94a2bd',n:'GitHub'}, ai:{c:'#a855f7',n:'AI Infra'}, python:{c:'#818cf8',n:'Python'},
+  distributed:{c:'#fb923c',n:'Distributed'}, sysdesign:{c:'#f5b417',n:'System Design'}, interview:{c:'#fb7185',n:'Interview'}, prep:{c:'#fcd34d',n:'Prep'},
+  review:{c:'#94a2bd',n:'Review'}, admin:{c:'#7891b8',n:'Admin'}, boss:{c:'#fb7185',n:'Boss'},
+};
+const SKILLS = {
+  'Backend Engineering':{ic:'🐍',color:'#818cf8',skills:['Python OOP','Decorators','Generators','Iterators','Asyncio','Context Managers','Multiprocessing']},
+  'Distributed Systems':{ic:'🌐',color:'#fb923c',skills:['Kafka','Redis','DLQ','Retries','Idempotency','Caching','Rate Limiting','Eventual Consistency']},
+  'AI Infrastructure':{ic:'🤖',color:'#a855f7',skills:['RAG','Vector DB','Embeddings','LangChain','LangGraph','MCP','ADK','Evaluation Frameworks','AI Observability']},
+  'System Design':{ic:'🏛️',color:'#f5b417',skills:['Notification Platform','Auth Platform','Logging Platform','Feature Flags','AI Gateway','Location Tracking']},
+};
+const QUESTS = {
+  main:[
+    {id:'getjob',ic:'🎯',title:'Get the Next Job',desc:'Land your next role.',reward:120,steps:[
+      {id:'gj1',t:'Polish all 3 resumes (India / Intl / AI)',xp:30},{id:'gj2',t:'Apply to 25+ roles total',xp:40},
+      {id:'gj3',t:'Get first recruiter response',xp:30},{id:'gj4',t:'Clear an interview round',xp:50},{id:'gj5',t:'Receive an offer',xp:100}]},
+    {id:'intl',ic:'🌍',title:'Become International Ready',desc:'Go global.',reward:120,steps:[
+      {id:'in1',t:'International resume v1 ready',xp:30},{id:'in2',t:'Apply to 10 international roles',xp:40},
+      {id:'in3',t:'LinkedIn optimized for global recruiters',xp:30},{id:'in4',t:'GitHub portfolio published',xp:40},{id:'in5',t:'System design + AI infra interview-ready',xp:50}]},
+  ],
+  side:[
+    {id:'liclean',ic:'💼',title:'LinkedIn Cleanup',reward:30,steps:[{id:'li1',t:'Update headline',xp:20},{id:'li2',t:'Rewrite About section',xp:20},{id:'li3',t:'Add Featured section',xp:20}]},
+    {id:'intlres',ic:'📄',title:'International Resume',reward:30,steps:[{id:'ir1',t:'Draft international resume',xp:25},{id:'ir2',t:'Tailor for UK / NL / IE',xp:25}]},
+    {id:'arrays',ic:'🧮',title:'Complete Arrays Module',reward:40,steps:[{id:'ar1',t:'Solve 10 arrays & hashing problems',xp:40}]},
+    {id:'ghrepo',ic:'🚀',title:'Publish GitHub Repo',reward:50,steps:[{id:'gh1',t:'Create AI Debugging Assistant repo',xp:25},{id:'gh2',t:'Write strong README',xp:25},{id:'gh3',t:'Publish & pin repo',xp:50}]},
+  ],
+};
+const ACHIEVEMENTS = [
+  {id:'first_app',ic:'📨',n:'First Application',d:'Logged your first application',cond:s=>s.apps>=1},
+  {id:'apps10',ic:'🔥',n:'10 Applications',d:'Applied to 10 roles',cond:s=>s.apps>=10},
+  {id:'apps25',ic:'💪',n:'25 Applications',d:'Applied to 25 roles',cond:s=>s.apps>=25},
+  {id:'apps50',ic:'🏅',n:'50 Applications',d:'Applied to 50 roles',cond:s=>s.apps>=50},
+  {id:'first_intl',ic:'🌍',n:'Going Global',d:'First international application',cond:s=>s.intl>=1},
+  {id:'xp1000',ic:'⚡',n:'1000 XP',d:'Earned 1000 total XP',cond:s=>s.xp>=1000},
+  {id:'xp5000',ic:'🌟',n:'5000 XP',d:'Earned 5000 total XP',cond:s=>s.xp>=5000},
+  {id:'lvl5',ic:'🎖️',n:'Level 5',d:'Reached level 5',cond:s=>s.level>=5},
+  {id:'lvl10',ic:'👑',n:'Level 10',d:'Reached level 10',cond:s=>s.level>=10},
+  {id:'rec1',ic:'🤝',n:'First Outreach',d:'Added your first recruiter',cond:s=>s.recruiters>=1},
+  {id:'recresp',ic:'📬',n:'First Recruiter Response',d:'A recruiter responded',cond:s=>s.recResp>=1},
+  {id:'int1',ic:'🎤',n:'First Interview',d:'Reached interview stage',cond:s=>s.interviews>=1},
+  {id:'intclear',ic:'✅',n:'Interview Cleared',d:'Advanced past round 1',cond:s=>s.intCleared>=1},
+  {id:'offer',ic:'💎',n:'Offer Received',d:'Got an offer!',cond:s=>s.offers>=1},
+  {id:'gh',ic:'🚀',n:'GitHub Published',d:'Published your portfolio repo',cond:s=>s.steps.has('gh3')},
+  {id:'li',ic:'💼',n:'LinkedIn Optimized',d:'Completed LinkedIn cleanup',cond:s=>s.steps.has('li1')&&s.steps.has('li2')&&s.steps.has('li3')},
+  {id:'streak7',ic:'🔥',n:'7-Day Streak',d:'Stayed active 7 days',cond:s=>s.streak>=7},
+  {id:'streak14',ic:'🌋',n:'14-Day Streak',d:'Unstoppable for 14 days',cond:s=>s.streak>=14},
+  {id:'skill5',ic:'🧠',n:'Skill Collector',d:'Mastered 5 skills',cond:s=>s.mastered>=5},
+  {id:'boss1',ic:'🛡️',n:'Boss I Down',d:'Beat the Week 1 boss',cond:s=>s.boss[1]>=70},
+  {id:'boss4',ic:'⚔️',n:'AI Boss Slain',d:'Beat the Week 4 boss',cond:s=>s.boss[4]>=70},
+];
+const BOSS = {
+  1:{title:'The Foundation Guardian',ic:'🛡️',topics:'HashMap · Two Pointer · Time Complexity',q:[
+    {q:'Average time complexity of a hashmap lookup?',a:['O(1)','O(log n)','O(n)','O(n²)'],c:0},
+    {q:'Two-pointer technique works best on…',a:['Unsorted graphs','Sorted arrays / linked lists','Hash tables','Trees only'],c:1},
+    {q:'Best structure to count element frequencies?',a:['Stack','Queue','HashMap','Heap'],c:2},
+    {q:'Time complexity of nested loop over n elements?',a:['O(n)','O(n log n)','O(n²)','O(1)'],c:2},
+    {q:'Two Sum optimal solution uses…',a:['Sorting only','Hashmap of complements','Brute force','Recursion'],c:1}]},
+  2:{title:'The Pythonic Wyrm',ic:'🐍',topics:'Decorators · Generators · Asyncio',q:[
+    {q:'A decorator is essentially…',a:['A class only','A function that wraps another function','A loop','A module'],c:1},
+    {q:'Generators produce values using…',a:['return','yield','print','await'],c:1},
+    {q:'asyncio is best for…',a:['CPU-bound math','I/O-bound concurrency','GUI rendering','Sorting'],c:1},
+    {q:'@staticmethod means the method…',a:['Needs self','Needs cls','Needs neither self nor cls','Is async'],c:2},
+    {q:'Generators are memory efficient because they…',a:['Cache everything','Are lazy / yield one at a time','Use threads','Compile to C'],c:1}]},
+  3:{title:'The Distributed Colossus',ic:'🌐',topics:'Kafka · Redis · DLQ',q:[
+    {q:'Kafka guarantees order within a…',a:['Topic','Partition','Cluster','Broker'],c:1},
+    {q:'A DLQ (Dead Letter Queue) stores…',a:['Cached reads','Messages that repeatedly fail','Logs','Metrics'],c:1},
+    {q:'Redis is primarily…',a:['A relational DB','An in-memory data store','A message broker only','A search engine'],c:1},
+    {q:'Idempotency ensures…',a:['Faster writes','Repeated requests have same effect','More partitions','Lower latency'],c:1},
+    {q:'A good retry strategy uses…',a:['Immediate infinite retries','Exponential backoff + jitter','No retries','Random crashes'],c:1}]},
+  4:{title:'The Neural Overlord',ic:'🤖',topics:'RAG · LangGraph · MCP',q:[
+    {q:'RAG stands for…',a:['Random Access Gateway','Retrieval-Augmented Generation','Rapid AI Grid','Recursive Agent Graph'],c:1},
+    {q:'A vector DB stores data as…',a:['Rows & columns','Embeddings / vectors','Plain text only','Images'],c:1},
+    {q:'LangGraph is used to build…',a:['Static websites','Stateful agent workflows','Databases','CSS layouts'],c:1},
+    {q:'MCP (Model Context Protocol) standardizes…',a:['Model training','Tool/context connections for models','GPU drivers','Tokenization'],c:1},
+    {q:'Evaluation frameworks help to…',a:['Style the UI','Measure model quality/accuracy','Speed up GPUs','Encrypt data'],c:1}]},
+};
+const T = (t,xp,c)=>({t,xp,c});
+const ROADMAP = [
+  {w:1, theme:'HCL + Profile Setup + Algorithm Foundation', range:'Jun 6 – Jun 12', days:[
+    {date:'2026-06-06',label:'Saturday',type:'weekend',goal:'Set up the foundation for job search + algorithm improvement.',tasks:[
+      T('Solve Contains Duplicate',20,'algo'),T('Solve Two Sum',20,'algo'),T('Solve Valid Anagram',20,'algo'),T('Solve Group Anagrams',40,'algo'),T('Solve Top K Frequent Elements',40,'algo'),
+      T('Create India Resume v2',50,'resume'),T('Create International Resume v1',50,'resume'),T('Create AI Resume v1',50,'resume'),
+      T('Update LinkedIn headline',25,'linkedin'),T('Update LinkedIn About section',25,'linkedin'),T('Create application tracker categories',15,'admin'),T('Create GitHub cleanup checklist',25,'github')]},
+    {date:'2026-06-07',label:'Sunday',type:'weekend',goal:'Prepare for HCL and continue algorithm basics.',tasks:[
+      T('Solve Valid Palindrome',20,'algo'),T('Solve Two Sum II',20,'algo'),T('Solve 3Sum',40,'algo'),T('Solve Container With Most Water',40,'algo'),
+      T('Revise RAG',30,'ai'),T('Revise LangChain',30,'ai'),T('Revise LangGraph',30,'ai'),T('Revise Google ADK',30,'ai'),T('Revise Gemini / Vertex AI basics',30,'ai'),
+      T('Practice AI Debugging Assistant explanation',25,'prep'),T('Practice Rider Allocation AI explanation',25,'prep'),T('Clean GitHub profile',40,'github'),T('Create AI Debugging Assistant repo skeleton',50,'github')]},
+    {date:'2026-06-08',label:'Monday',type:'interview',goal:'Clear HCL Round 2. Revise before, recover after.',tasks:[
+      T('Revise "Tell me about yourself"',20,'prep'),T('Revise AI Debugging Assistant',20,'prep'),T('Revise Rider Allocation AI',20,'prep'),T('Revise RAG',20,'prep'),T('Revise LangChain vs LangGraph',20,'prep'),
+      T('Revise Google ADK',20,'prep'),T('Revise Python OOP',20,'prep'),T('Revise basic coding patterns',20,'prep'),
+      T('🎤 HCL Interview · 3:00 PM – 4:00 PM',150,'interview'),T('Add interview notes after round',15,'admin'),T('Update interview tracker',15,'admin')]},
+    {date:'2026-06-09',label:'Tuesday',type:'weekday',goal:'Resume and applications.',tasks:[
+      T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),T('Send 1 recruiter message',10,'recruiter'),
+      T('Solve 1 array / hashmap problem',20,'algo'),T('Update resume based on HCL feedback',25,'resume'),T('Track all applications',10,'admin')]},
+    {date:'2026-06-10',label:'Wednesday',type:'weekday',goal:'LinkedIn and algorithms.',tasks:[
+      T('Solve 1 two-pointer problem',20,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),
+      T('Send 1 recruiter message',10,'recruiter'),T('Add LinkedIn Featured section',25,'linkedin'),T('Add AI Debugging Assistant placeholder to GitHub',20,'github')]},
+    {date:'2026-06-11',label:'Thursday',type:'weekday',goal:'Python basics and applications.',tasks:[
+      T('Revise defaultdict',15,'python'),T('Revise Counter',15,'python'),T('Revise dict / list comprehension',15,'python'),T('Solve 1 hashmap problem',20,'algo'),
+      T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),T('Send 1 recruiter message',10,'recruiter')]},
+    {date:'2026-06-12',label:'Friday',type:'weekday',goal:'Weekly consolidation.',tasks:[
+      T('Solve 1 mixed easy problem',20,'algo'),T('Review all Week 1 applications',15,'review'),T('Update application statuses',15,'review'),
+      T('Write Week 1 learning notes',15,'review'),T('⚔️ Complete Week 1 Boss Quiz',0,'boss')]},
+  ]},
+  {w:2, theme:'Python Interview Safety', range:'Jun 13 – Jun 19', days:[
+    {date:'2026-06-13',label:'Saturday',type:'weekend',goal:'Deep Python internals + heavy applications.',tasks:[
+      T('Study decorators',50,'python'),T('Code decorator examples',40,'python'),T('Study generators',50,'python'),T('Code generator examples',40,'python'),T('Study iterators',50,'python'),
+      T('Solve 3 stack / sliding-window problems',60,'algo'),T('Apply to 5 India roles',25,'apply'),T('Apply to 5 international roles',50,'apply')]},
+    {date:'2026-06-14',label:'Sunday',type:'weekend',goal:'Concurrency + profile polish.',tasks:[
+      T('Study context managers',50,'python'),T('Study threading',50,'python'),T('Study multiprocessing',50,'python'),T('Study asyncio basics',50,'python'),
+      T('Solve 3 binary-search / stack problems',60,'algo'),T('Send 5 recruiter messages',50,'recruiter'),T('Improve LinkedIn Experience section',25,'linkedin'),T('Update GitHub README',40,'github')]},
+    {date:'2026-06-15',label:'Monday',type:'weekday',goal:'Decorators revision.',tasks:[
+      T('Revise decorators',20,'python'),T('Solve 1 Python coding problem',20,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),T('Send 1 recruiter message',10,'recruiter')]},
+    {date:'2026-06-16',label:'Tuesday',type:'weekday',goal:'Generators revision.',tasks:[
+      T('Revise generators',20,'python'),T('Solve 1 sliding-window problem',40,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),T('Update tracker',10,'admin')]},
+    {date:'2026-06-17',label:'Wednesday',type:'weekday',goal:'Asyncio revision.',tasks:[
+      T('Revise asyncio',20,'python'),T('Solve 1 binary-search problem',40,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),T('Send 1 recruiter message',10,'recruiter')]},
+    {date:'2026-06-18',label:'Thursday',type:'weekday',goal:'Threading vs multiprocessing.',tasks:[
+      T('Revise threading vs multiprocessing',20,'python'),T('Solve 1 stack problem',40,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),T('Add notes to Python skill tree',15,'admin')]},
+    {date:'2026-06-19',label:'Friday',type:'weekday',goal:'Python weekly revision.',tasks:[
+      T('Python weekly revision',25,'python'),T('Review application responses',15,'review'),T('Update recruiter CRM',15,'review'),T('⚔️ Complete Week 2 Boss Quiz',0,'boss')]},
+  ]},
+  {w:3, theme:'Distributed Systems + System Design', range:'Jun 20 – Jun 26', days:[
+    {date:'2026-06-20',label:'Saturday',type:'weekend',goal:'Distributed systems deep dive.',tasks:[
+      T('Study Kafka deeply',50,'distributed'),T('Study Redis deeply',50,'distributed'),T('Study retries / DLQ / idempotency',50,'distributed'),T('Design Notification Platform',60,'sysdesign'),
+      T('Solve 3 algorithm problems',60,'algo'),T('Apply to 5 India roles',25,'apply'),T('Apply to 5 international roles',50,'apply')]},
+    {date:'2026-06-21',label:'Sunday',type:'weekend',goal:'Platform design marathon.',tasks:[
+      T('Design API Gateway',60,'sysdesign'),T('Design Centralized Logging Platform',60,'sysdesign'),T('Design Authentication Platform',60,'sysdesign'),T('Design Feature Flag System',60,'sysdesign'),
+      T('Practice verbal system design',40,'prep'),T('Send 5 recruiter messages',50,'recruiter'),T('Update portfolio / GitHub',40,'github')]},
+    {date:'2026-06-22',label:'Monday',type:'weekday',goal:'Kafka revision.',tasks:[
+      T('Revise Kafka partitions & consumer groups',20,'distributed'),T('Solve 1 algorithm problem',20,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply')]},
+    {date:'2026-06-23',label:'Tuesday',type:'weekday',goal:'Redis revision.',tasks:[
+      T('Revise Redis caching & failure handling',20,'distributed'),T('Solve 1 algorithm problem',20,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply')]},
+    {date:'2026-06-24',label:'Wednesday',type:'weekday',goal:'Reliability patterns.',tasks:[
+      T('Revise retries, DLQ, idempotency',20,'distributed'),T('Solve 1 algorithm problem',20,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),T('Send 1 recruiter message',10,'recruiter')]},
+    {date:'2026-06-25',label:'Thursday',type:'weekday',goal:'System design tradeoffs.',tasks:[
+      T('Revise system design tradeoffs',20,'sysdesign'),T('Practice 1 verbal system design',40,'prep'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply')]},
+    {date:'2026-06-26',label:'Friday',type:'weekday',goal:'Weekly consolidation.',tasks:[
+      T('Review Week 3 applications',15,'review'),T('Update application tracker',15,'review'),T('⚔️ Complete Week 3 Boss Quiz',0,'boss')]},
+  ]},
+  {w:4, theme:'AI Infrastructure + Public Portfolio', range:'Jun 27 – Jul 3', days:[
+    {date:'2026-06-27',label:'Saturday',type:'weekend',goal:'AI infra deep dive.',tasks:[
+      T('Study MCP',50,'ai'),T('Study Google ADK',50,'ai'),T('Study LangGraph workflows',50,'ai'),T('Study evaluation frameworks',50,'ai'),
+      T('Create AI Debugging Assistant README',40,'github'),T('Create architecture diagram draft',40,'github'),T('Apply to 5 India roles',25,'apply'),T('Apply to 5 international roles',50,'apply')]},
+    {date:'2026-06-28',label:'Sunday',type:'weekend',goal:'Agent systems + portfolio.',tasks:[
+      T('Study AI observability',50,'ai'),T('Study agent orchestration',50,'ai'),T('Study fallback models',50,'ai'),T('Study AI gateway design',60,'sysdesign'),
+      T('Add screenshots / demo flow to GitHub',40,'github'),T('Send 5 recruiter messages',50,'recruiter'),T('Practice AI system design',40,'prep')]},
+    {date:'2026-06-29',label:'Monday',type:'weekday',goal:'RAG revision.',tasks:[
+      T('Revise RAG architecture',20,'ai'),T('Solve 1 algorithm problem',20,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply')]},
+    {date:'2026-06-30',label:'Tuesday',type:'weekday',goal:'LangGraph revision.',tasks:[
+      T('Revise LangGraph',20,'ai'),T('Solve 1 algorithm problem',20,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply')]},
+    {date:'2026-07-01',label:'Wednesday',type:'weekday',goal:'MCP / ADK revision.',tasks:[
+      T('Revise MCP / ADK',20,'ai'),T('Solve 1 algorithm problem',20,'algo'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),T('Send 1 recruiter message',10,'recruiter')]},
+    {date:'2026-07-02',label:'Thursday',type:'weekday',goal:'Evaluation frameworks.',tasks:[
+      T('Revise AI evaluation frameworks',20,'ai'),T('Practice AI Debugging Assistant explanation',25,'prep'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply')]},
+    {date:'2026-07-03',label:'Friday',type:'weekday',goal:'Portfolio checkpoint.',tasks:[
+      T('Review all applications',15,'review'),T('Update recruiter CRM',15,'review'),T('Finalize GitHub portfolio checkpoint',40,'github'),T('⚔️ Complete Week 4 Boss Quiz',0,'boss')]},
+  ]},
+  {w:5, theme:'Consolidation + Review', range:'Jul 4 – Jul 6', days:[
+    {date:'2026-07-04',label:'Saturday',type:'weekend',goal:'Full audit.',tasks:[
+      T('Audit all resumes',30,'resume'),T('Audit LinkedIn',25,'linkedin'),T('Audit GitHub',25,'github'),T('Review all applications',15,'review'),
+      T('Identify weak response areas',15,'review'),T('Prepare next-month application list',20,'admin'),T('Solve 3 mixed algorithm problems',60,'algo')]},
+    {date:'2026-07-05',label:'Sunday',type:'weekend',goal:'Mock interview day.',tasks:[
+      T('Full mock interview',60,'prep'),T('System design mock',60,'sysdesign'),T('Python mock',50,'python'),T('AI infrastructure mock',60,'ai'),
+      T('Review career positioning',20,'review'),T('Update portfolio',30,'github'),T('Export monthly progress report',20,'admin')]},
+    {date:'2026-07-06',label:'Monday',type:'weekday',goal:'Plan the next 30 days.',tasks:[
+      T('Review monthly report',20,'review'),T('Decide next 30-day strategy',20,'review'),T('Apply to 2 India roles',10,'apply'),T('Apply to 2 international roles',20,'apply'),
+      T('Send 1 recruiter message',10,'recruiter'),T('Update final progress dashboard',15,'admin')]},
+  ]},
+];
+const DAY_INDEX = {}; ROADMAP.forEach(wk=>wk.days.forEach(d=>{DAY_INDEX[d.date]=d; d.week=wk.w;}));
+/* ===================== STATE ===================== */
+const $ = id => document.getElementById(id);
+let state, charts = {};
+function defaultState(){
+  return { player:{...CONFIG.player}, xp:0, tasks:{}, skills:{}, questSteps:[], achievements:[],
+    applications:[], recruiters:[], boss:{}, history:{}, streak:0, longest:0, lastActive:null, lastSpin:null, currentPage:'dashboard' };
+}
+function load(){
+  try{ const r = localStorage.getItem(CONFIG.storageKey); state = r ? Object.assign(defaultState(), JSON.parse(r)) : defaultState(); }
+  catch(e){ state = defaultState(); }
+  state.player = Object.assign({...CONFIG.player}, state.player||{});
+  ['tasks','skills','boss','history'].forEach(k=>state[k]=state[k]||{});
+  ['questSteps','achievements','applications','recruiters'].forEach(k=>state[k]=state[k]||[]);
+}
+function save(){ try{ localStorage.setItem(CONFIG.storageKey, JSON.stringify(state)); }catch(e){} }
+
+/* ===================== LEVEL MATH ===================== */
+function totalForLevel(L){ return L<=1?0:100*((L*(L+1)/2)-1); }   // XP to reach level L
+function levelFromXP(xp){ let L=1; while(totalForLevel(L+1)<=xp) L++; return L; }
+function levelInfo(){
+  const xp=state.xp, L=levelFromXP(xp), base=totalForLevel(L), next=totalForLevel(L+1);
+  const into=xp-base, span=next-base, pct=span?Math.min(100,into/span*100):100;
+  return {level:L, base, next, into, span, pct, rank:CONFIG.ranks[Math.min(L-1,CONFIG.ranks.length-1)], remain:Math.max(0,next-xp)};
+}
+
+/* ===================== STATS ===================== */
+function computeStats(){
+  const apps=state.applications, intl=apps.filter(a=>a.country && !/india/i.test(a.country)).length;
+  const interviews=apps.filter(a=>/interview|offer/i.test(a.status)).length;
+  const intCleared=apps.filter(a=>/interview 2|interview 3|offer/i.test(a.status)).length;
+  const offers=apps.filter(a=>/offer/i.test(a.status)).length;
+  const recResp=state.recruiters.filter(r=>/respond|touch/i.test(r.status||'')).length;
+  let mastered=0; Object.values(state.skills).forEach(v=>{if(v==='mastered')mastered++;});
+  const li=levelInfo();
+  return { apps:apps.length, intl, interviews, intCleared, offers, recResp, recruiters:state.recruiters.length,
+    mastered, xp:state.xp, level:li.level, streak:state.streak, boss:state.boss||{}, steps:new Set(state.questSteps) };
+}
+
+/* ===================== CORE ENGINE ===================== */
+function todayStr(d=new Date()){ return d.toISOString().slice(0,10); }
+function realToday(){ return todayStr(new Date()); }
+function touchStreak(){
+  const today=realToday();
+  if(state.lastActive===today) return;
+  const y=todayStr(new Date(Date.now()-864e5));
+  state.streak = (state.lastActive===y) ? state.streak+1 : 1;
+  state.lastActive=today; state.longest=Math.max(state.longest,state.streak);
+}
+function addXP(amount, opts={}){
+  if(!amount) return;
+  const before=levelFromXP(state.xp);
+  state.xp=Math.max(0,state.xp+amount);
+  const day=opts.date||realToday(); state.history[day]=(state.history[day]||0)+amount;
+  if(amount>0){ touchStreak(); if(opts.el) xpPopup(opts.el, amount); }
+  const after=levelFromXP(state.xp);
+  save();
+  if(after>before && amount>0){ celebrateLevel(after); }
+  checkAchievements();
+  refreshChrome();
+  rerenderCurrent();
+}
+function checkAchievements(){
+  const s=computeStats(); let unlocked=null;
+  ACHIEVEMENTS.forEach(a=>{ if(!state.achievements.includes(a.id) && a.cond(s)){ state.achievements.push(a.id); unlocked=unlocked||a; } });
+  if(unlocked){ save(); showToast(unlocked.ic,'Achievement Unlocked',unlocked.n,unlocked.d,'#a855f7'); burst(40); }
+}
+
+/* ===================== EFFECTS ===================== */
+function xpPopup(el, amt){
+  const r=el.getBoundingClientRect(); const n=document.createElement('div');
+  n.className='xpfx'; n.textContent='+'+amt+' XP'; n.style.left=(r.left+r.width/2)+'px'; n.style.top=(r.top-6)+'px';
+  document.body.appendChild(n); setTimeout(()=>n.remove(),1400);
+}
+const CFX=['#38bdf8','#22d3ee','#8b5cf6','#a855f7','#fcd34d','#34d399','#fb7185'];
+function burst(count=80){
+  for(let i=0;i<count;i++){ const c=document.createElement('div'); c.className='confetti';
+    c.style.left=Math.random()*100+'vw'; c.style.background=CFX[i%CFX.length];
+    c.style.animationDelay=(Math.random()*0.3)+'s'; c.style.animationDuration=(1.8+Math.random()*1.4)+'s';
+    if(Math.random()>.5) c.style.borderRadius='50%';
+    document.body.appendChild(c); setTimeout(()=>c.remove(),3400); }
+}
+function celebrateLevel(L){
+  const li={level:L, rank:CONFIG.ranks[Math.min(L-1,CONFIG.ranks.length-1)], unlock:CONFIG.unlocks[Math.min(L-1,CONFIG.unlocks.length-1)]};
+  $('lu-level').textContent='Level '+L; $('lu-rank').textContent=li.rank;
+  $('lu-unlock').textContent = li.unlock ? '🔓 Unlocked: '+li.unlock : 'Power level rising — keep pushing!';
+  openOverlay('ov-level'); burst(120);
+}
+let toastTimer;
+function showToast(ic,kicker,title,desc,color){
+  $('t-ico').textContent=ic; $('t-kicker').textContent=kicker; $('t-title').textContent=title; $('t-desc').textContent=desc;
+  const t=$('toast'); t.style.borderColor=color; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),4200);
+}
+function openOverlay(id){ $(id).classList.add('show'); }
+function closeOverlay(id){ $(id).classList.remove('show'); }
+function animateCount(el,to,dur=900,prefix='',suffix=''){
+  const start=parseFloat(el.dataset.v||'0')||0; const t0=performance.now();
+  function step(t){ const k=Math.min(1,(t-t0)/dur); const v=Math.round(start+(to-start)*(1-Math.pow(1-k,3)));
+    el.textContent=prefix+v.toLocaleString()+suffix; if(k<1)requestAnimationFrame(step); else el.dataset.v=to; }
+  requestAnimationFrame(step);
+}
+
+/* particles */
+function startParticles(){
+  const cv=$('particles'), ctx=cv.getContext('2d'); let w,h,pts;
+  function resize(){ w=cv.width=innerWidth; h=cv.height=innerHeight;
+    pts=Array.from({length:Math.min(70,Math.floor(w/22))},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.8+0.4,vx:(Math.random()-.5)*0.25,vy:(Math.random()-.5)*0.25,a:Math.random()*0.5+0.2})); }
+  resize(); addEventListener('resize',resize);
+  (function loop(){ ctx.clearRect(0,0,w,h);
+    for(const p of pts){ p.x+=p.vx;p.y+=p.vy; if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,7); ctx.fillStyle='rgba(120,200,255,'+p.a+')'; ctx.fill(); }
+    requestAnimationFrame(loop); })();
+}
+
+/* ===================== NAV ===================== */
+function buildNav(){
+  $('navlist').innerHTML = NAV.map(n=> n.g
+    ? `<div class="px-5 pt-3 pb-1 text-[10px] tracking-[2.5px] uppercase font-bold" style="color:var(--muted)">${n.g}</div>`
+    : `<div class="nav-item" data-page="${n.id}" onclick="showPage('${n.id}')"><span class="nav-ico">${n.ic}</span>${n.t}</div>`).join('');
+  $('mobilenav').innerHTML = MOBNAV.map(n=>`<button data-page="${n.id}" onclick="showPage('${n.id}')"><span style="font-size:17px">${n.ic}</span>${n.t}</button>`).join('');
+}
+function showPage(p){
+  state.currentPage=p; save();
+  document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id==='page-'+p));
+  document.querySelectorAll('[data-page]').forEach(el=>el.classList.toggle('active',el.dataset.page===p));
+  rerenderCurrent(); if(innerWidth<=860){ $('sidebar').classList.remove('open'); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleSidebar(){ $('sidebar').classList.toggle('open'); }
+function rerenderCurrent(){ const r=RENDER[state.currentPage]; if(r) try{ r(); }catch(e){ console.error(e); } }
+function refreshChrome(){
+  const li=levelInfo();
+  $('sb-name').textContent=state.player.name; $('sb-rank').textContent='Lvl '+li.level+' · '+li.rank;
+  $('sb-xp').textContent=state.xp.toLocaleString()+' XP'; $('sb-xpnext').textContent=li.remain>0?('▸ '+li.remain+' to next'):'MAX';
+  $('sb-bar').style.width=li.pct+'%'; $('sb-streak').textContent=state.streak+' Day'+(state.streak===1?'':'s');
+  const spun = state.lastSpin===realToday(); $('spin-dot').innerHTML = spun?'':'<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#fb7185;box-shadow:0 0 8px #fb7185;margin-left:2px"></span>';
+}
+/* ===================== TASK HELPERS ===================== */
+function dayDone(date){ const m=state.tasks[date]||{}; return DAY_INDEX[date].tasks.filter((_,i)=>m[i]).length; }
+function dayPct(date){ const tot=DAY_INDEX[date].tasks.length; return tot?Math.round(dayDone(date)/tot*100):0; }
+function dayXP(date){ const d=DAY_INDEX[date], m=state.tasks[date]||{}; let earned=0,avail=0; d.tasks.forEach((t,i)=>{avail+=t.xp; if(m[i])earned+=t.xp;}); return {earned,avail}; }
+function getActiveDay(){
+  if(DAY_INDEX[realToday()]) return DAY_INDEX[realToday()];
+  for(const wk of ROADMAP) for(const d of wk.days){ if(dayPct(d.date)<100) return d; }
+  return ROADMAP[0].days[0];
+}
+function weekUnlocked(n){ return n===1 || (state.boss[n-1]||0)>=70; }
+function toggleTask(date,i,el){
+  const task=DAY_INDEX[date].tasks[i];
+  if(task.c==='boss'){ showPage('boss'); return; }
+  if(!weekUnlocked(DAY_INDEX[date].week)){ showToast('🔒','Locked','Week '+DAY_INDEX[date].week+' is locked','Beat the previous boss (70%+) first','#fb7185'); return; }
+  state.tasks[date]=state.tasks[date]||{};
+  const m=state.tasks[date], wasDone=!!m[i];
+  if(wasDone){ delete m[i]; addXP(-task.xp); if(m.__clear){ delete m.__clear; addXP(-CONFIG.xp.dailyClear); } }
+  else { m[i]=true; addXP(task.xp,{el,date});
+    const tot=DAY_INDEX[date].tasks.length, done=DAY_INDEX[date].tasks.filter((_,j)=>m[j]).length;
+    if(done===tot && !m.__clear){ m.__clear=true; addXP(CONFIG.xp.dailyClear,{date}); burst(90); showToast('🎉','Daily Clear','Day Complete!','+'+CONFIG.xp.dailyClear+' bonus XP','#34d399'); }
+  }
+  save();
+}
+function taskRow(date,i){
+  const t=DAY_INDEX[date].tasks[i], done=!!(state.tasks[date]||{})[i], col=(CAT[t.c]||CAT.admin).c;
+  const boss=t.c==='boss';
+  return `<div class="task-row ${done?'done':''}">
+    <div class="check ${done?'on':''}" onclick="toggleTask('${date}',${i},this)"></div>
+    <span style="width:8px;height:8px;border-radius:50%;background:${col};box-shadow:0 0 8px ${col};flex-shrink:0"></span>
+    <span class="ttxt flex-1 text-sm" style="color:var(--txt)">${t.t}</span>
+    ${boss?`<span class="chip" style="background:rgba(251,113,133,0.15);color:#fda4af">BOSS</span>`:`<span class="chip font-mono" style="background:rgba(245,180,23,0.12);color:var(--gold2)">+${t.xp}</span>`}
+  </div>`;
+}
+
+/* ===================== RENDERERS ===================== */
+const RENDER = {};
+RENDER.dashboard = function(){
+  const li=levelInfo(), s=computeStats(), d=getActiveDay(), dx=dayXP(d.date), pct=dayPct(d.date);
+  const hr=new Date().getHours(); const hi=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  $('dash-greet').textContent=`${hi}, ${state.player.name} — let's level up your career.`;
+  // hero
+  const R=52,C=2*Math.PI*R, off=C-(li.pct/100)*C;
+  $('dash-hero').innerHTML=`<div class="glass glass-hover p-6 stat" style="overflow:visible">
+    <div class="flex items-center gap-6 flex-wrap">
+      <div style="position:relative;width:132px;height:132px;flex-shrink:0">
+        <svg width="132" height="132" style="transform:rotate(-90deg)">
+          <circle class="ring-bg" cx="66" cy="66" r="${R}" fill="none" stroke-width="9"/>
+          <circle class="ring-fg" cx="66" cy="66" r="${R}" fill="none" stroke="url(#g1)" stroke-width="9" stroke-dasharray="${C}" stroke-dashoffset="${off}"/>
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div class="text-[10px] tracking-widest" style="color:var(--dim)">LEVEL</div>
+          <div class="font-display font-extrabold text-4xl grad tg-cyan">${li.level}</div>
+        </div>
+      </div>
+      <div class="flex-1 min-w-[220px]">
+        <div class="flex items-center gap-3 flex-wrap">
+          <div class="font-display font-extrabold text-2xl text-white">${state.player.name}</div>
+          <span class="chip" style="background:linear-gradient(135deg,rgba(56,189,248,0.18),rgba(168,85,247,0.18));border:1px solid rgba(56,189,248,0.35);color:#cfe9ff">${li.rank}</span>
+        </div>
+        <div class="text-sm mt-1" style="color:var(--dim)">${state.player.title} → International Backend + AI Infra Engineer</div>
+        <div class="mt-4">
+          <div class="flex justify-between text-xs mb-1.5 font-mono"><span style="color:var(--cyan)">${li.into.toLocaleString()} / ${li.span.toLocaleString()} XP</span><span style="color:var(--dim)">${li.remain>0?li.remain+' XP to Lvl '+(li.level+1):'MAX LEVEL'}</span></div>
+          <div class="bar" style="height:13px"><i style="width:${li.pct}%"></i></div>
+        </div>
+        <div class="flex gap-2.5 mt-4 flex-wrap">
+          <span class="chip" style="background:rgba(251,146,60,0.14);color:var(--orange)"><span class="flame">🔥</span> ${state.streak} day streak</span>
+          <span class="chip" style="background:rgba(56,189,248,0.12);color:var(--cyan)">📨 ${s.apps} apps</span>
+          <span class="chip" style="background:rgba(245,180,23,0.12);color:var(--gold2)">🏆 ${state.achievements.length} trophies</span>
+          <span class="chip" style="background:rgba(168,85,247,0.12);color:#d8b4fe">🌳 ${s.mastered} mastered</span>
+        </div>
+      </div>
+    </div></div>`;
+  // stats
+  const tiles=[
+    {l:'Total XP',v:state.xp,c:'var(--cyan)',sub:li.remain>0?('/ '+li.next.toLocaleString()+' next level'):'max level',cnt:true},
+    {l:'Current Streak',v:state.streak,c:'var(--orange)',sub:'Best: '+state.longest+' days',ic:'🔥'},
+    {l:'Applications',v:s.apps,c:'#d8b4fe',sub:s.intl+' international'},
+    {l:'Level Progress',v:Math.round(li.pct),c:'var(--gold2)',sub:'to next level',suffix:'%',bar:li.pct},
+  ];
+  $('dash-stats').innerHTML=tiles.map(t=>`<div class="glass glass-hover stat p-5">
+    <div class="label mb-2">${t.l}</div>
+    <div class="font-display font-extrabold text-3xl" style="color:${t.c}">${t.ic?'<span class="flame text-2xl">'+t.ic+'</span> ':''}<span class="count" data-to="${t.v}" data-suffix="${t.suffix||''}">${t.v}${t.suffix||''}</span></div>
+    ${t.bar!=null?`<div class="bar mt-3" style="height:7px"><i style="width:${t.bar}%"></i></div>`:`<div class="text-xs mt-1.5" style="color:var(--muted)">${t.sub}</div>`}
+  </div>`).join('');
+  document.querySelectorAll('#dash-stats .count').forEach(el=>animateCount(el,+el.dataset.to,900,'',el.dataset.suffix));
+  // today
+  $('today-label').textContent=`· ${d.label}, ${fmtDate(d.date)}`;
+  $('today-xp').textContent=`${dx.earned} / ${dx.avail} XP`; $('today-pct').textContent=pct+'%';
+  $('today-tasks').innerHTML=d.tasks.map((_,i)=>taskRow(d.date,i)).join('');
+  $('today-clear').classList.toggle('hidden', pct<100);
+  // current quest
+  const mq=QUESTS.main.find(q=>!q.steps.every(st=>state.questSteps.includes(st.id)))||QUESTS.main[0];
+  const done=mq.steps.filter(st=>state.questSteps.includes(st.id)).length;
+  $('dash-quest').innerHTML=`<div class="label mb-2">Active Main Quest</div>
+    <div class="flex items-center gap-2 mb-2"><span class="text-2xl">${mq.ic}</span><span class="font-grotesk font-bold text-white">${mq.title}</span></div>
+    <div class="bar" style="height:9px"><i style="width:${done/mq.steps.length*100}%"></i></div>
+    <div class="text-xs mt-2" style="color:var(--dim)">${done}/${mq.steps.length} objectives · <span style="color:var(--gold2)">+${mq.reward} bonus</span></div>
+    <button class="btn btn-ghost w-full mt-3 text-sm" onclick="showPage('quests')">View Quests →</button>`;
+  // funnel
+  renderFunnel();
+  buildCharts();
+};
+function fmtDate(iso){ const [y,m,dd]=iso.split('-'); return new Date(y,m-1,dd).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function renderFunnel(){
+  const apps=state.applications, n=apps.length||1;
+  const stages=[
+    {l:'Total',c:apps.length,col:'#38bdf8'},
+    {l:'Applied+',c:apps.filter(a=>!/wishlist/i.test(a.status)).length,col:'#22d3ee'},
+    {l:'Screening+',c:apps.filter(a=>/screening|interview|offer/i.test(a.status)).length,col:'#a855f7'},
+    {l:'Interview+',c:apps.filter(a=>/interview|offer/i.test(a.status)).length,col:'#f5b417'},
+    {l:'Offers',c:apps.filter(a=>/offer/i.test(a.status)).length,col:'#34d399'},
+  ];
+  $('dash-funnel').innerHTML=stages.map(s=>`<div>
+    <div class="flex justify-between text-xs mb-1"><span style="color:var(--dim)">${s.l}</span><span class="font-mono" style="color:${s.col}">${s.c}</span></div>
+    <div class="bar" style="height:8px"><i style="width:${Math.max(4,s.c/n*100)}%;background:${s.col};box-shadow:0 0 12px ${s.col}"></i></div></div>`).join('');
+}
+
+RENDER.roadmap = function(){
+  // week map
+  let map='';
+  ROADMAP.forEach((wk,idx)=>{
+    const unlocked=weekUnlocked(wk.w), beat=(state.boss[wk.w]||0)>=70 || wk.w===5;
+    const cur = wk.days.some(d=>d.date===realToday()) || (!beat && unlocked && wk.days.some(d=>dayPct(d.date)<100));
+    let cls = !unlocked?'locked':(beat?'done':(cur?'current':'done'));
+    if(idx>0) map+=`<div class="wlink ${weekUnlocked(wk.w)?'done':''}"></div>`;
+    map+=`<div class="text-center"><div class="wnode ${cls}" onclick="${unlocked?`showWeek(${wk.w})`:''}">${unlocked?(beat?'✓':'W'+wk.w):'🔒'}</div><div class="text-[10px] mt-1.5" style="color:var(--muted)">W${wk.w}</div></div>`;
+  });
+  $('week-map').innerHTML=map;
+  // body
+  $('roadmap-body').innerHTML=ROADMAP.map(wk=>{
+    const unlocked=weekUnlocked(wk.w), score=state.boss[wk.w]||0;
+    const wdone=wk.days.reduce((a,d)=>a+dayDone(d.date),0), wtot=wk.days.reduce((a,d)=>a+d.tasks.length,0), wp=wtot?Math.round(wdone/wtot*100):0;
+    return `<div class="mb-7" id="wk-${wk.w}">
+      <div class="glass p-5 mb-4" style="${unlocked?'':'opacity:.6'}">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div><div class="flex items-center gap-2"><span class="font-display font-bold text-xl text-white">Week ${wk.w}</span>
+            ${!unlocked?'<span class="chip" style="background:rgba(251,113,133,0.15);color:#fda4af">🔒 LOCKED</span>':(score>=70?'<span class="chip" style="background:rgba(52,211,153,0.15);color:#6ee7b7">✓ BOSS CLEARED</span>':'')}</div>
+            <div class="text-sm mt-1" style="color:var(--cyan)">${wk.theme}</div>
+            <div class="text-xs mt-0.5" style="color:var(--muted)">${wk.range}</div></div>
+          <div class="text-right"><div class="font-display font-bold text-2xl grad-gold">${wp}%</div><div class="text-xs" style="color:var(--muted)">${wdone}/${wtot} tasks</div>
+            ${wk.w<5?`<button class="btn ${score>=70?'btn-ghost':'btn-violet'} mt-2 text-xs py-1.5" onclick="showPage('boss')">${score>=70?'Boss ✓ '+score+'%':'⚔️ Boss Fight'}</button>`:''}</div>
+        </div>
+        <div class="bar mt-3" style="height:7px"><i style="width:${wp}%"></i></div>
+      </div>
+      <div class="space-y-0">${wk.days.map(d=>dayCard(d,unlocked)).join('')}</div>
+    </div>`;
+  }).join('');
+};
+function dayCard(d,unlocked){
+  const pct=dayPct(d.date), dx=dayXP(d.date), today=d.date===realToday();
+  const typecls=d.type==='interview'?'interview':d.type==='weekend'?'weekend':'';
+  const typeChip=d.type==='interview'?'<span class="chip" style="background:rgba(245,180,23,0.15);color:var(--gold2)">🎤 INTERVIEW DAY</span>'
+    :d.type==='weekend'?'<span class="chip" style="background:rgba(168,85,247,0.13);color:#d8b4fe">🌙 FULL DAY</span>'
+    :'<span class="chip" style="background:rgba(56,189,248,0.12);color:var(--cyan)">💼 WEEKDAY</span>';
+  return `<div class="day ${typecls} ${today?'today':''}" onclick="toggleDay('${d.date}',this)">
+    <div class="flex items-center justify-between flex-wrap gap-2">
+      <div class="flex items-center gap-3">
+        <div><div class="font-grotesk font-bold text-white">${d.label} <span class="font-sans font-normal text-sm" style="color:var(--dim)">${fmtDate(d.date)}</span> ${today?'<span class="chip" style="background:rgba(245,180,23,0.2);color:var(--gold2)">TODAY</span>':''}</div>
+          <div class="text-xs mt-0.5" style="color:var(--muted)">${d.goal}</div></div>
+      </div>
+      <div class="flex items-center gap-3">${typeChip}
+        <div class="text-right"><div class="font-grotesk font-bold" style="color:${pct===100?'var(--green)':'var(--cyan)'}">${pct}%</div>
+          <div class="text-[11px] font-mono" style="color:var(--muted)">${dx.earned}/${dx.avail} XP</div></div>
+        <span style="color:var(--dim);transition:transform .3s" class="caret">▾</span>
+      </div>
+    </div>
+    <div class="bar mt-2.5" style="height:6px"><i style="width:${pct}%"></i></div>
+    <div class="day-tasks mt-3 space-y-2" style="display:none" onclick="event.stopPropagation()">
+      ${unlocked?d.tasks.map((_,i)=>taskRow(d.date,i)).join(''):'<div class="text-sm p-3 text-center" style="color:var(--muted)">🔒 Beat the previous boss to unlock this week</div>'}
+    </div>
+  </div>`;
+}
+function toggleDay(date,el){ const box=el.querySelector('.day-tasks'),c=el.querySelector('.caret');
+  const open=box.style.display!=='none'; box.style.display=open?'none':'block'; if(c)c.style.transform=open?'':'rotate(180deg)'; }
+function showWeek(n){ showPage('roadmap'); setTimeout(()=>{ const e=$('wk-'+n); if(e)e.scrollIntoView({behavior:'smooth',block:'start'}); },60); }
+
+RENDER.quests = function(){
+  const card=(q,big)=>{
+    const done=q.steps.filter(s=>state.questSteps.includes(s.id)).length, all=done===q.steps.length;
+    return `<div class="glass glass-hover p-5" style="${all?'border-color:rgba(52,211,153,0.4)':''}">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-2.5"><span class="text-2xl">${q.ic}</span>
+          <div><div class="font-grotesk font-bold text-white ${big?'text-lg':''}">${q.title}</div>
+          ${q.desc?`<div class="text-xs" style="color:var(--dim)">${q.desc}</div>`:''}</div></div>
+        <span class="chip" style="background:rgba(245,180,23,0.12);color:var(--gold2)">+${q.reward}</span>
+      </div>
+      <div class="bar mb-3" style="height:7px"><i class="${all?'':''}" style="width:${done/q.steps.length*100}%;${all?'background:linear-gradient(90deg,#34d399,#22d3ee)':''}"></i></div>
+      <div class="space-y-2">${q.steps.map(s=>{ const on=state.questSteps.includes(s.id);
+        return `<div class="task-row ${on?'done':''}"><div class="check ${on?'on':''}" onclick="toggleStep('${q.id}','${s.id}',${s.xp},this)"></div>
+          <span class="ttxt flex-1 text-sm">${s.t}</span><span class="chip font-mono" style="background:rgba(245,180,23,0.12);color:var(--gold2)">+${s.xp}</span></div>`;}).join('')}</div>
+      ${all?'<div class="mt-3 text-center chip w-full justify-center" style="background:rgba(52,211,153,0.14);color:#6ee7b7">✓ QUEST COMPLETE — bonus claimed</div>':''}
+    </div>`;
+  };
+  $('quests-main').innerHTML=QUESTS.main.map(q=>card(q,true)).join('');
+  $('quests-side').innerHTML=QUESTS.side.map(q=>card(q,false)).join('');
+};
+function findQuest(id){ return QUESTS.main.concat(QUESTS.side).find(q=>q.id===id); }
+function toggleStep(qid,sid,xp,el){
+  const q=findQuest(qid), i=state.questSteps.indexOf(sid), flag=qid+'__done';
+  if(i>=0){ state.questSteps.splice(i,1); addXP(-xp);
+    const fi=state.questSteps.indexOf(flag); if(fi>=0){ state.questSteps.splice(fi,1); addXP(-q.reward); } }
+  else { state.questSteps.push(sid); addXP(xp,{el});
+    if(q.steps.every(s=>state.questSteps.includes(s.id)) && !state.questSteps.includes(flag)){
+      state.questSteps.push(flag); addXP(q.reward); burst(80); showToast('✅','Quest Complete',q.title,'+'+q.reward+' bonus XP','#34d399'); } }
+  save();
+}
+
+RENDER.skills = function(){
+  $('skills-body').innerHTML=Object.entries(SKILLS).map(([cat,o])=>{
+    const total=o.skills.length, mast=o.skills.filter(s=>state.skills[s]==='mastered').length, unl=o.skills.filter(s=>state.skills[s]==='unlocked').length;
+    return `<div class="glass p-5">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2.5"><span class="text-2xl">${o.ic}</span><span class="font-grotesk font-bold text-white">${cat}</span></div>
+        <span class="chip font-mono" style="background:rgba(245,180,23,0.12);color:var(--gold2)">${mast}/${total} ★</span>
+      </div>
+      <div class="bar mb-4" style="height:7px"><i style="width:${mast/total*100}%;background:${o.color};box-shadow:0 0 12px ${o.color}"></i></div>
+      <div class="grid grid-cols-2 gap-2.5">${o.skills.map(s=>{ const st=state.skills[s]||'locked';
+        const ic=st==='mastered'?'★':st==='unlocked'?'◈':'🔒';
+        return `<div class="snode ${st}" onclick="cycleSkill('${s.replace(/'/g,"\\'")}',this)"><span>${s}</span><span style="opacity:.9">${ic}</span></div>`;}).join('')}</div>
+    </div>`;
+  }).join('');
+};
+function cycleSkill(name,el){
+  const cur=state.skills[name]||'locked';
+  if(cur==='locked'){ state.skills[name]='unlocked'; addXP(CONFIG.xp.skillUnlock,{el}); }
+  else if(cur==='unlocked'){ state.skills[name]='mastered'; addXP(CONFIG.xp.skillMaster,{el}); burst(40); }
+  else { state.skills[name]='locked'; }
+  save();
+}
+const STATUSES=['Wishlist','Applied','Recruiter Contacted','Screening','Interview 1','Interview 2','Interview 3','Offer','Rejected','Closed'];
+const SOURCES=['LinkedIn','Wellfound','Instahyre','Hirist','LinkedIn UK','Welcome To The Jungle','Relocate.me','IrishJobs','Referral','Other'];
+function statusClass(s){ s=(s||'').toLowerCase();
+  if(s.includes('wishlist'))return'st-wishlist'; if(s.includes('recruiter'))return'st-recruiter'; if(s.includes('screening'))return'st-screening';
+  if(s.includes('interview'))return'st-interview'; if(s.includes('offer'))return'st-offer'; if(s.includes('rejected'))return'st-rejected'; if(s.includes('closed'))return'st-closed'; return'st-applied'; }
+
+RENDER.applications = function(){
+  const s=computeStats();
+  const tiles=[['Applications',s.apps,'#38bdf8'],['International',s.intl,'#a855f7'],['Interviews',s.interviews,'#f5b417'],['Offers',s.offers,'#34d399']];
+  $('app-stats').innerHTML=tiles.map(t=>`<div class="glass glass-hover stat p-5"><div class="label mb-2">${t[0]}</div><div class="font-display font-extrabold text-3xl" style="color:${t[1+1-1]?t[2]:t[2]}">${t[1]}</div></div>`).join('');
+  const a=state.applications;
+  $('app-table').innerHTML=`<thead><tr><th>Company</th><th>Role</th><th>Country</th><th>Status</th><th>Salary</th><th>Source</th><th>Visa</th><th>Applied</th><th></th></tr></thead><tbody>${
+    a.length?a.slice().reverse().map(x=>`<tr>
+      <td class="font-semibold text-white">${esc(x.company)}</td><td>${esc(x.role)}</td><td>${esc(x.country||'-')}</td>
+      <td><select onchange="updateAppStatus('${x.id}',this.value)" style="padding:4px 8px;font-size:11px;width:auto">${STATUSES.map(st=>`<option ${st===x.status?'selected':''}>${st}</option>`).join('')}</select></td>
+      <td>${esc(x.salary||'-')}</td><td>${esc(x.source||'-')}</td><td>${esc(x.visa||'-')}</td><td class="font-mono text-xs">${x.date||'-'}</td>
+      <td><button onclick="deleteApp('${x.id}')" style="color:var(--red);background:none;border:none;cursor:pointer">✕</button></td></tr>`).join('')
+    :`<tr><td colspan="9" class="text-center py-6" style="color:var(--muted)">No applications yet — log your first to earn XP.</td></tr>`}</tbody>`;
+};
+function esc(s){ return (''+(s??'')).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function addApplication(){
+  const c=$('ap-company').value.trim(), r=$('ap-role').value.trim();
+  if(!c||!r){ showToast('⚠️','Missing','Company & role required','Fill both fields','#fb7185'); return; }
+  const country=$('ap-country').value.trim();
+  const app={id:'a'+Date.now()+Math.floor(Math.random()*999),company:c,role:r,country,status:$('ap-status').value,salary:$('ap-salary').value.trim(),source:$('ap-source').value,date:$('ap-date').value||realToday(),visa:$('ap-visa').value,notes:$('ap-notes').value.trim()};
+  state.applications.push(app); save();
+  const intl=country && !/india/i.test(country);
+  addXP(intl?CONFIG.xp.intlApp:CONFIG.xp.indiaApp,{el:event&&event.target});
+  ['ap-company','ap-role','ap-country','ap-salary','ap-notes'].forEach(id=>$(id).value='');
+  showToast('📨','Logged',c,'+'+(intl?CONFIG.xp.intlApp:CONFIG.xp.indiaApp)+' XP'+(intl?' · International!':''),'#38bdf8');
+}
+function updateAppStatus(id,v){ const a=state.applications.find(x=>x.id===id); if(a){a.status=v;save();checkAchievements();rerenderCurrent();} }
+function deleteApp(id){ state.applications=state.applications.filter(x=>x.id!==id); save(); rerenderCurrent(); }
+
+RENDER.crm = function(){
+  const r=state.recruiters;
+  $('crm-table').innerHTML=`<thead><tr><th>Name</th><th>Company</th><th>Country</th><th>Status</th><th>LinkedIn</th><th>Last Contact</th><th></th></tr></thead><tbody>${
+    r.length?r.slice().reverse().map(x=>`<tr>
+      <td class="font-semibold text-white">${esc(x.name)}</td><td>${esc(x.company||'-')}</td><td>${esc(x.country||'-')}</td>
+      <td><select onchange="updateRec('${x.id}',this.value)" style="padding:4px 8px;font-size:11px;width:auto">${['To Contact','Messaged','Responded','In Touch','Closed'].map(st=>`<option ${st===x.status?'selected':''}>${st}</option>`).join('')}</select></td>
+      <td>${x.linkedin?`<a href="${esc(x.linkedin)}" target="_blank" style="color:var(--cyan)">link ↗</a>`:'-'}</td><td class="font-mono text-xs">${x.date||'-'}</td>
+      <td><button onclick="deleteRec('${x.id}')" style="color:var(--red);background:none;border:none;cursor:pointer">✕</button></td></tr>`).join('')
+    :`<tr><td colspan="7" class="text-center py-6" style="color:var(--muted)">No recruiters yet — add one (+10 XP).</td></tr>`}</tbody>`;
+};
+function addRecruiter(){
+  const n=$('cr-name').value.trim(); if(!n){ showToast('⚠️','Missing','Name required','','#fb7185'); return; }
+  state.recruiters.push({id:'r'+Date.now()+Math.floor(Math.random()*999),name:n,company:$('cr-company').value.trim(),country:$('cr-country').value.trim(),status:$('cr-status').value,linkedin:$('cr-linkedin').value.trim(),date:$('cr-date').value,notes:$('cr-notes').value.trim()});
+  save(); addXP(CONFIG.xp.recruiter,{el:event&&event.target});
+  ['cr-name','cr-company','cr-country','cr-linkedin','cr-notes'].forEach(id=>$(id).value='');
+  showToast('🤝','Recruiter Added',n,'+'+CONFIG.xp.recruiter+' XP','#2dd4bf');
+}
+function updateRec(id,v){ const r=state.recruiters.find(x=>x.id===id); if(r){r.status=v;save();checkAchievements();rerenderCurrent();} }
+function deleteRec(id){ state.recruiters=state.recruiters.filter(x=>x.id!==id); save(); rerenderCurrent(); }
+
+RENDER.boss = function(){
+  $('boss-body').innerHTML=[1,2,3,4].map(n=>{
+    const b=BOSS[n], unlocked=weekUnlocked(n), score=state.boss[n]||0, beat=score>=70;
+    return `<div class="boss-glass glass p-6 mb-4" style="${beat?'border-color:rgba(52,211,153,0.4)':unlocked?'border-color:rgba(168,85,247,0.4)':'opacity:.6'}">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-4">
+          <div style="width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:32px;background:radial-gradient(circle at 50% 30%,rgba(168,85,247,0.3),rgba(11,16,34,0.9));border:1px solid rgba(168,85,247,0.4)">${b.ic}</div>
+          <div><div class="text-xs" style="color:var(--muted)">WEEK ${n} BOSS</div>
+            <div class="font-display font-bold text-xl text-white">${b.title}</div>
+            <div class="text-xs mt-0.5" style="color:var(--cyan)">${b.topics}</div></div>
+        </div>
+        <div class="text-right">
+          ${beat?`<div class="font-display font-bold text-2xl" style="color:var(--green)">${score}%</div><div class="chip" style="background:rgba(52,211,153,0.15);color:#6ee7b7">DEFEATED</div>`
+          :unlocked?`${score?`<div class="text-sm mb-1" style="color:var(--gold2)">Best ${score}%</div>`:''}<button class="btn btn-violet" onclick="startBoss(${n})">⚔️ Fight Boss</button>`
+          :'<span class="chip" style="background:rgba(251,113,133,0.15);color:#fda4af">🔒 Beat Week '+(n-1)+' boss</span>'}
+        </div>
+      </div></div>`;
+  }).join('');
+};
+let bossState=null;
+function startBoss(n){
+  bossState={n,answers:{}};
+  const b=BOSS[n];
+  $('ov-generic-body').innerHTML=`<div class="text-left">
+    <div class="text-center mb-4"><div class="text-5xl">${b.ic}</div><div class="font-display font-bold text-2xl text-white mt-1">${b.title}</div>
+      <div class="text-sm" style="color:var(--cyan)">${b.topics}</div><div class="text-xs mt-1" style="color:var(--muted)">Score 70%+ to win · +${b.q.length*30} XP</div></div>
+    <div class="space-y-4 max-h-[52vh] overflow-y-auto pr-1">${b.q.map((q,qi)=>`<div>
+      <div class="font-semibold text-sm mb-2">${qi+1}. ${q.q}</div>
+      <div class="grid grid-cols-1 gap-2">${q.a.map((opt,oi)=>`<div class="task-row" style="cursor:pointer" onclick="pickAns(${qi},${oi},this)" data-q="${qi}"><div class="check" style="border-radius:50%;width:20px;height:20px"></div><span class="text-sm">${opt}</span></div>`).join('')}</div></div>`).join('')}</div>
+    <div class="flex gap-3 mt-5"><button class="btn btn-ghost flex-1" onclick="closeOverlay('ov-generic')">Retreat</button><button class="btn btn-violet flex-1" onclick="submitBoss()">Submit Answers</button></div>
+  </div>`;
+  openOverlay('ov-generic');
+}
+function pickAns(qi,oi,el){ bossState.answers[qi]=oi;
+  el.parentElement.querySelectorAll('.task-row').forEach(r=>{r.querySelector('.check').classList.remove('on');r.style.borderColor='';});
+  el.querySelector('.check').classList.add('on'); el.style.borderColor='var(--bright)'; }
+function submitBoss(){
+  const b=BOSS[bossState.n]; let correct=0; b.q.forEach((q,i)=>{ if(bossState.answers[i]===q.c) correct++; });
+  const score=Math.round(correct/b.q.length*100), pass=score>=70, n=bossState.n;
+  const prev=state.boss[n]||0; state.boss[n]=Math.max(prev,score); save();
+  if(pass && prev<70){ addXP(b.q.length*30); burst(140); }
+  checkAchievements(); refreshChrome();
+  $('ov-generic-body').innerHTML=`<div class="text-center">
+    <div class="text-7xl ${pass?'float':''}">${pass?'🏆':'💀'}</div>
+    <div class="font-display font-extrabold text-4xl ${pass?'grad-gold':''} mt-2" style="${pass?'':'color:var(--red)'}">${score}%</div>
+    <div class="font-grotesk text-xl mt-1" style="color:${pass?'var(--green)':'var(--red)'}">${pass?'BOSS DEFEATED!':'Defeated... try again'}</div>
+    <div class="text-sm mt-2" style="color:var(--dim)">${correct}/${b.q.length} correct${pass?' · Week '+(n+1)+' unlocked! +'+(b.q.length*30)+' XP':' · Need 70% to advance'}</div>
+    <div class="flex gap-3 mt-6"><button class="btn btn-ghost flex-1" onclick="closeOverlay('ov-generic')">Close</button>${pass?'':`<button class="btn btn-violet flex-1" onclick="startBoss(${n})">Retry</button>`}</div></div>`;
+  rerenderCurrent();
+}
+
+RENDER.achievements = function(){
+  $('ach-count').textContent=state.achievements.length;
+  $('ach-grid').innerHTML=ACHIEVEMENTS.map(a=>{ const e=state.achievements.includes(a.id);
+    return `<div class="glass ${e?'glass-hover':''} p-5 text-center" style="${e?'':'opacity:.45'}">
+      <div class="text-4xl mb-2" style="${e?'filter:drop-shadow(0 0 12px rgba(245,180,23,0.6))':'filter:grayscale(1)'}">${e?a.ic:'🔒'}</div>
+      <div class="font-grotesk font-bold text-sm ${e?'text-white':''}" style="${e?'':'color:var(--muted)'}">${a.n}</div>
+      <div class="text-xs mt-1" style="color:var(--muted)">${a.d}</div>
+      ${e?'<div class="chip mt-2 w-full justify-center" style="background:rgba(245,180,23,0.14);color:var(--gold2)">EARNED</div>':'<div class="text-[11px] mt-2" style="color:var(--muted)">Locked</div>'}</div>`;
+  }).join('');
+};
+
+RENDER.reports = function(){ renderReports(state._rep||'week'); };
+function renderReports(period){
+  state._rep=period;
+  const days=period==='week'?7:31, dates=lastDates(days);
+  const xp=dates.reduce((a,d)=>a+(state.history[d]||0),0);
+  const s=computeStats(), bossScores=Object.entries(state.boss).map(([k,v])=>`W${k}: ${v}%`).join(' · ')||'None yet';
+  const tasksDone=Object.keys(state.tasks).reduce((a,d)=>a+(DAY_INDEX[d]?dayDone(d):0),0);
+  const metrics=[['XP Earned ('+period+')',xp.toLocaleString(),'#22d3ee'],['Total XP',state.xp.toLocaleString(),'#38bdf8'],['Applications',s.apps,'#a855f7'],['International',s.intl,'#8b5cf6'],
+    ['Interviews',s.interviews,'#f5b417'],['Offers',s.offers,'#34d399'],['Tasks Completed',tasksDone,'#2dd4bf'],['Skills Mastered',s.mastered,'#fb923c'],
+    ['Current Streak',state.streak+'d','#fb7185'],['Longest Streak',state.longest+'d','#f97316'],['Achievements',state.achievements.length,'#fcd34d'],['Recruiters',s.recruiters,'#60a5fa']];
+  $('reports-body').innerHTML=`
+    <div class="glass p-6 mb-5">
+      <div class="flex items-center justify-between"><div class="font-display font-bold text-xl text-white">${period==='week'?'Weekly':'Monthly'} Report</div>
+        <span class="chip" style="background:rgba(56,189,248,0.12);color:var(--cyan)">${state.player.name} · Lvl ${levelInfo().level}</span></div>
+      <div class="text-xs mt-1" style="color:var(--muted)">Generated ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}</div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-5">${metrics.map(m=>`<div class="glass glass-hover stat p-5"><div class="label mb-2">${m[0]}</div><div class="font-display font-extrabold text-2xl" style="color:${m[2]}">${m[1]}</div></div>`).join('')}</div>
+    <div class="glass p-6"><div class="label mb-3">Boss Fight Scores</div><div class="text-sm" style="color:var(--cyan)">${bossScores}</div>
+      <div class="label mt-5 mb-3">Trophies</div><div class="flex flex-wrap gap-2">${state.achievements.length?state.achievements.map(id=>{const a=ACHIEVEMENTS.find(x=>x.id===id);return a?`<span class="chip" style="background:rgba(245,180,23,0.12);color:var(--gold2)">${a.ic} ${a.n}</span>`:'';}).join(''):'<span style="color:var(--muted)">None yet</span>'}</div>
+      <button class="btn btn-sky mt-5" onclick="exportData()">⬇️ Export Full Report (JSON)</button></div>`;
+}
+function lastDates(n){ const out=[]; for(let i=n-1;i>=0;i--) out.push(todayStr(new Date(Date.now()-i*864e5))); return out; }
+
+/* ===================== SPIN WHEEL ===================== */
+const SEG=[{l:'+30 XP',xp:30,c:'#38bdf8'},{l:'+75 XP',xp:75,c:'#8b5cf6'},{l:'+50 XP',xp:50,c:'#22d3ee'},{l:'JACKPOT +200',xp:200,c:'#f5b417'},
+  {l:'+25 XP',xp:25,c:'#34d399'},{l:'+100 XP',xp:100,c:'#a855f7'},{l:'+40 XP',xp:40,c:'#2dd4bf'},{l:'DOUBLE +150',xp:150,c:'#fb7185'}];
+let wheelRot=0, spinning=false;
+function drawWheel(rot){
+  const cv=$('wheel'); if(!cv) return; const ctx=cv.getContext('2d'), cx=170,cy=170,r=160, seg=SEG.length, ang=2*Math.PI/seg;
+  ctx.clearRect(0,0,340,340); ctx.save(); ctx.translate(cx,cy); ctx.rotate(rot);
+  for(let i=0;i<seg;i++){ const a0=i*ang;
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,r,a0,a0+ang); ctx.closePath();
+    ctx.fillStyle=SEG[i].c; ctx.globalAlpha=0.9; ctx.fill(); ctx.globalAlpha=1;
+    ctx.strokeStyle='rgba(5,7,15,0.7)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.save(); ctx.rotate(a0+ang/2); ctx.textAlign='right'; ctx.fillStyle='#05070f'; ctx.font='700 13px "Space Grotesk",sans-serif';
+    ctx.fillText(SEG[i].l, r-14, 5); ctx.restore(); }
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(cx,cy,30,0,7); ctx.fillStyle='#0b1022'; ctx.fill(); ctx.strokeStyle='#38bdf8'; ctx.lineWidth=3; ctx.stroke();
+  ctx.fillStyle='#fcd34d'; ctx.font='800 20px "Space Grotesk"'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('★',cx,cy+1);
+}
+RENDER.spin=function(){ drawWheel(wheelRot); const spun=state.lastSpin===realToday();
+  $('spin-btn').disabled=spun; $('spin-btn').style.opacity=spun?'0.5':'1'; $('spin-btn').style.cursor=spun?'not-allowed':'pointer';
+  $('spin-msg').textContent=spun?'✓ You already spun today. Come back tomorrow!':'One free spin available today!'; };
+function spinWheel(){
+  if(spinning||state.lastSpin===realToday()) return; spinning=true;
+  const seg=SEG.length, ang=2*Math.PI/seg, win=Math.floor(Math.random()*seg);
+  const target=(Math.PI*1.5)-(win*ang)-(ang/2); const spins=6*2*Math.PI; const start=wheelRot, end=start+spins+(target-(start%(2*Math.PI)));
+  const dur=4200, t0=performance.now(); $('spin-btn').disabled=true;
+  (function anim(t){ const k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,4); wheelRot=start+(end-start)*e; drawWheel(wheelRot);
+    if(k<1) requestAnimationFrame(anim);
+    else { spinning=false; state.lastSpin=realToday(); save(); const rw=SEG[win];
+      addXP(rw.xp); burst(120); showToast('🎡','Fortune Wheel',rw.l,'Reward claimed!','#f5b417');
+      $('spin-msg').textContent='🎉 You won '+rw.l+'!'; refreshChrome(); RENDER.spin(); } })(t0);
+}
+
+/* ===================== CHARTS ===================== */
+function buildCharts(){
+  if(typeof Chart==='undefined') return;
+  Chart.defaults.color='#94a2bd'; Chart.defaults.font.family='Inter';
+  const w=lastDates(7), wv=w.map(d=>state.history[d]||0), wl=w.map(d=>fmtDate(d));
+  mkChart('ch-weekly',{type:'bar',data:{labels:wl,datasets:[{data:wv,backgroundColor:wv.map(()=>'rgba(56,189,248,0.7)'),borderRadius:7,borderSkipped:false}]},
+    options:baseOpts({y:true})});
+  const dd=lastDates(14), dv=dd.map(d=>state.history[d]||0);
+  mkChart('ch-daily',{type:'line',data:{labels:dd.map(d=>fmtDate(d)),datasets:[{data:dv,borderColor:'#22d3ee',backgroundColor:grad('#22d3ee'),fill:true,tension:.4,pointRadius:0,borderWidth:2.5}]},options:baseOpts({y:true})});
+  const cats=Object.entries(SKILLS).map(([k,o])=>({k:CAT_SHORT(k),pct:Math.round(o.skills.filter(s=>state.skills[s]==='mastered').length/o.skills.length*100)}));
+  mkChart('ch-skills',{type:'radar',data:{labels:cats.map(c=>c.k),datasets:[{data:cats.map(c=>c.pct),borderColor:'#a855f7',backgroundColor:'rgba(168,85,247,0.2)',pointBackgroundColor:'#fcd34d',borderWidth:2}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:100,grid:{color:'rgba(120,150,200,0.12)'},angleLines:{color:'rgba(120,150,200,0.12)'},pointLabels:{color:'#cbd5e1',font:{size:11}},ticks:{display:false}}}}});
+}
+function CAT_SHORT(k){ return {'Backend Engineering':'Backend','Distributed Systems':'Distributed','AI Infrastructure':'AI Infra','System Design':'Sys Design'}[k]||k; }
+function grad(c){ const cv=document.createElement('canvas'),ctx=cv.getContext('2d'),g=ctx.createLinearGradient(0,0,0,180); g.addColorStop(0,c+'66'); g.addColorStop(1,c+'00'); return g; }
+function baseOpts(o){ return {responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(11,16,34,0.95)',borderColor:'rgba(56,189,248,0.3)',borderWidth:1,padding:10}},
+  scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{display:!!o.y,grid:{color:'rgba(120,150,200,0.08)'},ticks:{font:{size:10}},beginAtZero:true}}}; }
+function mkChart(id,cfg){ const el=$(id); if(!el)return; if(charts[id])charts[id].destroy(); charts[id]=new Chart(el,cfg); }
+
+/* ===================== SETTINGS / DATA ===================== */
+function saveProfile(){ state.player.name=$('set-name').value.trim()||'Player'; state.player.title=$('set-title').value.trim()||'Engineer'; save(); refreshChrome(); rerenderCurrent(); showToast('⚙️','Saved','Profile updated','','#38bdf8'); }
+function exportData(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ascend-progress-'+realToday()+'.json'; a.click();
+  showToast('⬇️','Exported','Progress downloaded','','#34d399'); }
+function importData(e){ const f=e.target.files[0]; if(!f)return; const rd=new FileReader();
+  rd.onload=()=>{ try{ const data=JSON.parse(rd.result); state=Object.assign(defaultState(),data); save(); initUI(); showToast('⬆️','Imported','Progress restored','','#34d399'); }
+    catch(err){ showToast('⚠️','Error','Invalid JSON file','','#fb7185'); } }; rd.readAsText(f); }
+function resetData(){ openOverlay('ov-generic');
+  $('ov-generic-body').innerHTML=`<div class="text-center"><div class="text-6xl">⚠️</div>
+    <div class="font-display font-bold text-2xl text-white mt-2">Reset all progress?</div>
+    <div class="text-sm mt-2" style="color:var(--dim)">This erases XP, levels, tasks, applications, recruiters and achievements. Cannot be undone.</div>
+    <div class="flex gap-3 mt-6"><button class="btn btn-ghost flex-1" onclick="closeOverlay('ov-generic')">Cancel</button>
+    <button class="btn btn-danger flex-1" onclick="doReset()">Reset Everything</button></div></div>`; }
+function doReset(){ localStorage.removeItem(CONFIG.storageKey); state=defaultState(); save(); closeOverlay('ov-generic'); initUI(); showToast('🔄','Reset','Fresh start ready','','#fb7185'); }
+function manualXP(){ const amt=parseInt($('set-xp').value)||0; if(!amt)return; addXP(amt,{el:event&&event.target}); showToast('✦','XP Awarded','+'+amt+' XP',$('set-xp-reason').value||'Manual','#f5b417'); }
+
+/* ===================== INIT ===================== */
+function initUI(){
+  $('ap-status').innerHTML=STATUSES.map(s=>`<option ${s==='Applied'?'selected':''}>${s}</option>`).join('');
+  $('ap-source').innerHTML=SOURCES.map(s=>`<option>${s}</option>`).join('');
+  $('ap-date').value=realToday();
+  $('set-name').value=state.player.name; $('set-title').value=state.player.title;
+  refreshChrome(); showPage(state.currentPage||'dashboard');
+}
+function boot(){
+  load(); buildNav(); startParticles(); initUI(); drawWheel(0);
+  addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeOverlay('ov-level'); closeOverlay('ov-generic'); } });
+  document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('show'); }));
+}
+boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luna — Period Cycle Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <meta name="theme-color" content="#d4787b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Luna">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root {
+      --cream: #faf7f4; --parchment: #f3ede6; --blush: #f2d4d0;
+      --rose: #d4787b; --rose-deep: #b85558; --sage: #8aac9a;
+      --sage-light: #d6eadf; --ink: #2c2420; --ink-mid: #5a4a44;
+      --ink-soft: #8b7570; --white: #ffffff;
+      --card-bg: #ffffff;
+      --card-shadow: 0 2px 20px rgba(44,36,32,0.07), 0 1px 4px rgba(44,36,32,0.04);
+      --card-radius: 18px; --input-bg: #fdf9f7;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --danger-bg: #fff5f5;
+      --danger-text: #c0392b;
+      --danger-btn: #c0392b;
+      --danger-btn-hover: #a93226;
+      --toast-bg: var(--ink);
+      --toast-text: var(--cream);
+    }
+
+    [data-theme="dark"] {
+      --cream: #141111;
+      --parchment: #221c1c;
+      --blush: #4a3436;
+      --rose: #d98a8d;
+      --rose-deep: #eb9ea1;
+      --sage: #93b5a2;
+      --sage-light: #24332d;
+      --ink: #f6eeee;
+      --ink-mid: #d9caca;
+      --ink-soft: #a89292;
+      --white: #1b1717;
+      --card-bg: #201a1a;
+      --card-shadow: 0 8px 30px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.2);
+      --input-bg: #181313;
+      --danger-bg: #2b1717;
+      --danger-text: #ff8a8a;
+      --danger-btn: #d45a5a;
+      --danger-btn-hover: #bb4747;
+      --toast-bg: #f3e9e9;
+      --toast-text: #1b1717;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body); background: var(--cream); color: var(--ink);
+      line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column;
+    }
+    ul { list-style: none; }
+    button { cursor: pointer; font-family: inherit; }
+    input, textarea, button { font-size: 1rem; }
+
+    .site-header {
+      background: var(--white); border-bottom: 1px solid var(--parchment);
+      padding: 0 clamp(1.25rem, 5vw, 3rem); position: sticky; top: 0; z-index: 50;
+    }
+    .header-inner {
+      max-width: 860px; margin: 0 auto; display: flex; align-items: center;
+      gap: 1rem; height: 64px;
+    }
+    .logo { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+    .logo-mark { font-size: 1.6rem; color: var(--rose); line-height: 1; }
+    .logo-text {
+      font-family: var(--font-display); font-size: 1.5rem; font-weight: 500;
+      color: var(--ink); letter-spacing: 0.02em;
+    }
+    .header-tagline {
+      font-size: 0.8rem; color: var(--ink-soft); letter-spacing: 0.04em;
+      font-style: italic; font-family: var(--font-display); flex: 1;
+    }
+    .sync-status {
+      display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem;
+      color: var(--ink-soft); background: var(--sage-light);
+      padding: 0.25rem 0.65rem; border-radius: 20px;
+    }
+    .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); }
+    .hidden { display: none !important; }
+
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid var(--parchment);
+      background: var(--card-bg);
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--card-shadow);
+      transition: background 0.18s, border-color 0.18s, transform 0.15s, color 0.18s;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { background: var(--parchment); }
+    .theme-toggle:active { transform: scale(0.96); }
+    .theme-toggle:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,120,123,0.18);
+    }
+
+    .main-content {
+      flex: 1; max-width: 860px; width: 100%; margin: 0 auto;
+      padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 5vw, 2rem);
+      display: flex; flex-direction: column; gap: 3rem;
+    }
+    .section-title {
+      font-family: var(--font-display); font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 400; color: var(--ink); letter-spacing: 0.01em; margin-bottom: 1.25rem;
+    }
+
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .insight-card {
+      background: var(--card-bg); border-radius: var(--card-radius);
+      padding: 1.25rem 1.4rem; box-shadow: var(--card-shadow);
+      border: 1px solid var(--parchment);
+      transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
+    }
+    .insight-card:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(44,36,32,0.1); }
+    .insight-card.highlight {
+      background: linear-gradient(135deg, #fce8e6 0%, #f9d6d8 100%); border-color: var(--blush);
+    }
+    [data-theme="dark"] .insight-card.highlight {
+      background: linear-gradient(135deg, #3a2729 0%, #4a3134 100%);
+      border-color: var(--blush);
+    }
+    .card-icon { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .card-label {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-soft); font-weight: 500; margin-bottom: 0.3rem;
+    }
+    .card-value {
+      font-family: var(--font-display); font-size: 1.2rem;
+      font-weight: 500; color: var(--ink); line-height: 1.3;
+    }
+    .data-notice {
+      font-size: 0.8rem; color: var(--ink-soft); font-style: italic;
+      margin-top: 0.75rem; font-family: var(--font-display);
+    }
+
+    .form-card {
+      background: var(--card-bg); border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow); border: 1px solid var(--parchment);
+      padding: clamp(1.5rem, 5vw, 2.5rem);
+    }
+    .form-title {
+      font-family: var(--font-display); font-size: clamp(1.3rem, 3.5vw, 1.75rem);
+      font-weight: 400; color: var(--ink); margin-bottom: 1.5rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.1rem; }
+    label { font-size: 0.82rem; font-weight: 500; color: var(--ink-mid); letter-spacing: 0.01em; }
+    .required { color: var(--rose); }
+    .optional { color: var(--ink-soft); font-weight: 400; }
+    input[type="date"], textarea {
+      background: var(--input-bg); border: 1.5px solid var(--parchment);
+      border-radius: 10px; padding: 0.65rem 0.9rem; color: var(--ink);
+      transition: border-color 0.18s, box-shadow 0.18s; width: 100%;
+      font-family: var(--font-body); -webkit-appearance: none; appearance: none;
+    }
+    input[type="date"]:focus, textarea:focus {
+      outline: none; border-color: var(--rose); box-shadow: 0 0 0 3px rgba(212,120,123,0.15);
+    }
+    input[type="date"].invalid, textarea.invalid { border-color: #d44; background: #fff5f5; }
+    [data-theme="dark"] input[type="date"].invalid,
+    [data-theme="dark"] textarea.invalid {
+      background: var(--danger-bg);
+      border-color: var(--danger-text);
+    }
+    textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+    .field-error { font-size: 0.76rem; color: #c0392b; min-height: 1rem; display: block; }
+    [data-theme="dark"] .field-error { color: var(--danger-text); }
+    .form-error { margin-top: 0.5rem; }
+    .form-actions { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      border: none; border-radius: 10px; padding: 0.65rem 1.4rem; font-weight: 500;
+      letter-spacing: 0.01em; transition: background 0.18s, transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      line-height: 1; white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; pointer-events: none; }
+    .btn-primary { background: var(--rose); color: #fff; box-shadow: 0 2px 10px rgba(212,120,123,0.35); }
+    .btn-primary:hover { background: var(--rose-deep); box-shadow: 0 4px 18px rgba(212,120,123,0.45); }
+    .btn-ghost { background: transparent; color: var(--ink-mid); border: 1.5px solid var(--parchment); }
+    .btn-ghost:hover { background: var(--parchment); }
+    [data-theme="dark"] .btn-ghost:hover { background: #2a2222; }
+    .btn-icon {
+      background: transparent; border: none; padding: 0.4rem; border-radius: 8px;
+      color: var(--ink-soft); font-size: 0.95rem; line-height: 1;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-icon:hover { background: var(--parchment); color: var(--ink); }
+    [data-theme="dark"] .btn-icon:hover { background: #2a2222; }
+    .btn-danger { background: var(--danger-btn); color: #fff; }
+    .btn-danger:hover { background: var(--danger-btn-hover); }
+    .btn-spinner {
+      width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .history-header { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .record-count { font-size: 0.78rem; color: var(--ink-soft); font-family: var(--font-display); font-style: italic; }
+    .state-view { text-align: center; padding: 3.5rem 1rem; color: var(--ink-soft); }
+    .spinner {
+      width: 36px; height: 36px; border: 3px solid var(--blush);
+      border-top-color: var(--rose); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 1rem;
+    }
+    .empty-illustration { font-size: 3.5rem; color: var(--blush); margin-bottom: 1rem; line-height: 1; }
+    .empty-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; color: var(--ink-mid); margin-bottom: 0.4rem; }
+    .empty-body { font-size: 0.875rem; color: var(--ink-soft); max-width: 300px; margin: 0 auto; font-style: italic; font-family: var(--font-display); }
+    .records-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .record-item {
+      background: var(--card-bg); border: 1px solid var(--parchment);
+      border-radius: var(--card-radius); box-shadow: var(--card-shadow);
+      padding: 1.1rem 1.4rem; display: grid; grid-template-columns: 1fr auto;
+      gap: 0.5rem 1rem; align-items: start;
+      animation: slideIn 0.3s var(--ease-out) both; transition: box-shadow 0.2s;
+    }
+    .record-item:hover { box-shadow: 0 4px 24px rgba(44,36,32,0.1); }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .record-dates { font-family: var(--font-display); font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+    .record-duration { font-size: 0.75rem; color: var(--ink-soft); margin-top: 0.15rem; }
+    .record-notes { font-size: 0.82rem; color: var(--ink-mid); margin-top: 0.4rem; font-style: italic; grid-column: 1; white-space: pre-wrap; max-width: 500px; }
+    .record-actions { display: flex; gap: 0.25rem; flex-shrink: 0; }
+    .record-item.editing-target { border-color: var(--rose); box-shadow: 0 0 0 3px rgba(212,120,123,0.15), var(--card-shadow); }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(44,36,32,0.4);
+      backdrop-filter: blur(4px); z-index: 100; display: flex;
+      align-items: center; justify-content: center; padding: 1.5rem;
+      animation: fadeIn 0.2s ease;
+    }
+    [data-theme="dark"] .modal-backdrop { background: rgba(0,0,0,0.55); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card {
+      background: var(--white); border-radius: var(--card-radius); padding: 2rem;
+      max-width: 360px; width: 100%; box-shadow: 0 20px 60px rgba(44,36,32,0.2);
+      animation: scaleIn 0.25s var(--ease-out);
+    }
+    @keyframes scaleIn { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-card h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; margin-bottom: 0.5rem; color: var(--ink); }
+    .modal-body { font-size: 0.875rem; color: var(--ink-soft); margin-bottom: 1.5rem; }
+    .modal-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+    .toast {
+      position: fixed; bottom: 1.75rem; left: 50%; transform: translateX(-50%);
+      background: var(--toast-bg); color: var(--toast-text); padding: 0.75rem 1.5rem;
+      border-radius: 40px; font-size: 0.85rem; z-index: 200; white-space: nowrap;
+      box-shadow: 0 8px 30px rgba(44,36,32,0.25); animation: toastIn 0.3s var(--ease-out); pointer-events: none;
+    }
+    .toast.success { background: var(--sage); color: #1a2e20; }
+    .toast.error { background: #c0392b; color: #fff; }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(12px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+    .site-footer { background: var(--parchment); border-top: 1px solid var(--blush); padding: 2rem clamp(1.25rem, 5vw, 3rem); text-align: center; }
+    .footer-note { font-size: 0.78rem; color: var(--ink-soft); max-width: 580px; margin: 0 auto 0.5rem; line-height: 1.7; font-family: var(--font-display); }
+    .footer-copy { font-size: 0.72rem; color: var(--ink-soft); letter-spacing: 0.05em; font-family: var(--font-display); font-style: italic; }
+
+    @media (max-width: 520px) {
+      .cards-grid { grid-template-columns: 1fr 1fr; }
+      .header-tagline { display: none; }
+      .sync-status { display: none; }
+      .record-item { grid-template-columns: 1fr; }
+      .record-actions { justify-content: flex-end; }
+      .theme-toggle { width: 36px; height: 36px; }
+    }
+    @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+    @media (max-width: 360px) { .cards-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-mark">◑</span>
+      <span class="logo-text">Luna</span>
+    </div>
+    <p class="header-tagline">Your body, understood.</p>
+
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+      <span id="theme-icon">🌙</span>
+    </button>
+
+    <div id="sync-status" class="sync-status hidden">
+      <span class="sync-dot"></span>
+      <span class="sync-label">Synced</span>
+    </div>
+  </div>
+</header>
+
+<main class="main-content">
+
+  <section class="insights-section">
+    <h2 class="section-title">Your Cycle at a Glance</h2>
+    <div class="cards-grid">
+      <div class="insight-card">
+        <div class="card-icon">🌸</div>
+        <div class="card-label">Last Period</div>
+        <div class="card-value" id="val-last-period">—</div>
+      </div>
+      <div class="insight-card highlight">
+        <div class="card-icon">📅</div>
+        <div class="card-label">Next Period</div>
+        <div class="card-value" id="val-next-period">—</div>
+      </div>
+      <div class="insight-card">
+        <div class="card-icon">🔁</div>
+        <div class="card-label">Avg. Cycle Length</div>
+        <div class="card-value" id="val-avg-cycle">—</div>
+      </div>
+      <div class="insight-card">
+        <div class="card-icon">⏳</div>
+        <div class="card-label">Avg. Period Duration</div>
+        <div class="card-value" id="val-avg-duration">—</div>
+      </div>
+      <div class="insight-card">
+        <div class="card-icon">✨</div>
+        <div class="card-label">Est. Ovulation</div>
+        <div class="card-value" id="val-ovulation">—</div>
+      </div>
+      <div class="insight-card">
+        <div class="card-icon">🌿</div>
+        <div class="card-label">Fertile Window</div>
+        <div class="card-value" id="val-fertile">—</div>
+      </div>
+      <div class="insight-card">
+        <div class="card-icon">🌙</div>
+        <div class="card-label">Est. PMS Window</div>
+        <div class="card-value" id="val-pms">—</div>
+      </div>
+    </div>
+    <p class="data-notice" id="data-notice">Add at least 2 records to see cycle predictions.</p>
+  </section>
+
+  <section class="form-section">
+    <div class="form-card">
+      <h2 class="form-title" id="form-title">Log a Period</h2>
+      <form id="period-form" novalidate autocomplete="off">
+        <input type="hidden" id="edit-id" value="" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="start-date">Start Date <span class="required">*</span></label>
+            <input type="date" id="start-date" name="start_date" required />
+            <span class="field-error" id="err-start"></span>
+          </div>
+          <div class="form-group">
+            <label for="end-date">End Date <span class="required">*</span></label>
+            <input type="date" id="end-date" name="end_date" required />
+            <span class="field-error" id="err-end"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="notes">Notes <span class="optional">(optional)</span></label>
+          <textarea id="notes" name="notes" rows="3" placeholder="Flow intensity, symptoms, mood…"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submit-btn">
+            <span class="btn-text">Save Record</span>
+            <span class="btn-spinner hidden"></span>
+          </button>
+          <button type="button" class="btn btn-ghost" id="cancel-btn" style="display:none">Cancel</button>
+        </div>
+        <span class="field-error form-error" id="err-form"></span>
+      </form>
+    </div>
+  </section>
+
+  <section class="history-section">
+    <div class="history-header">
+      <h2 class="section-title">Cycle History</h2>
+      <span class="record-count" id="record-count"></span>
+    </div>
+    <div id="loading-state" class="state-view">
+      <div class="spinner"></div>
+      <p>Loading your records…</p>
+    </div>
+    <div id="empty-state" class="state-view hidden">
+      <div class="empty-illustration">◑</div>
+      <p class="empty-title">No records yet</p>
+      <p class="empty-body">Log your first period above and Luna will start learning your cycle.</p>
+    </div>
+    <ul class="records-list hidden" id="records-list" aria-label="Cycle history"></ul>
+  </section>
+
+</main>
+
+<div id="delete-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-card">
+    <h3 id="modal-title">Delete this record?</h3>
+    <p class="modal-body">This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+      <button class="btn btn-ghost" id="cancel-delete-btn">Keep it</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+<footer class="site-footer">
+  <p class="footer-note">⚠ Luna is a personal tracking tool and is <strong>not medical advice</strong>. All cycle, ovulation, fertile window, and PMS predictions are estimates based on your data and may be inaccurate. Please consult a healthcare professional for medical guidance.</p>
+  <p class="footer-copy">© 2026 Luna · Your data stays yours.</p>
+</footer>
+
+<script>
+'use strict';
+
+/* ─── Supabase config — fill in to enable cloud sync ─── */
+const SUPABASE_URL = 'https://uhoptkzixseyellwkchx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_gKVTfPyHy7Cw2Ar12NYHYg_372avYUH';
+const USE_SUPABASE = !!(SUPABASE_URL && SUPABASE_KEY);
+const TABLE  = 'period_records';
+const LS_KEY = 'luna_records';
+const THEME_KEY = 'luna_theme';
+
+/* ─── State ─── */
+let records = [];
+let deletingId = null;
+let submitting = false;
+
+/* ─── DOM refs ─── */
+const form         = document.getElementById('period-form');
+const startInput   = document.getElementById('start-date');
+const endInput     = document.getElementById('end-date');
+const notesInput   = document.getElementById('notes');
+const editIdInput  = document.getElementById('edit-id');
+const submitBtn    = document.getElementById('submit-btn');
+const cancelBtn    = document.getElementById('cancel-btn');
+const formTitle    = document.getElementById('form-title');
+const errStart     = document.getElementById('err-start');
+const errEnd       = document.getElementById('err-end');
+const errForm      = document.getElementById('err-form');
+const loadingEl    = document.getElementById('loading-state');
+const emptyEl      = document.getElementById('empty-state');
+const listEl       = document.getElementById('records-list');
+const countEl      = document.getElementById('record-count');
+const syncEl       = document.getElementById('sync-status');
+const syncLabelEl  = syncEl.querySelector('.sync-label');
+const syncDotEl    = syncEl.querySelector('.sync-dot');
+const noticeEl     = document.getElementById('data-notice');
+const toastEl      = document.getElementById('toast');
+const modalEl      = document.getElementById('delete-modal');
+const confirmDelEl = document.getElementById('confirm-delete-btn');
+const cancelDelEl  = document.getElementById('cancel-delete-btn');
+const themeToggle  = document.getElementById('theme-toggle');
+const themeIcon    = document.getElementById('theme-icon');
+
+const vLast    = document.getElementById('val-last-period');
+const vNext    = document.getElementById('val-next-period');
+const vCycle   = document.getElementById('val-avg-cycle');
+const vDur     = document.getElementById('val-avg-duration');
+const vOvul    = document.getElementById('val-ovulation');
+const vFertile = document.getElementById('val-fertile');
+const vPms     = document.getElementById('val-pms');
+
+/* ─── Date helpers ─── */
+function parseDate(s) {
+  if (!s) return null;
+  const [y, m, d] = s.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d));
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+}
+function fmtRange(a, b) {
+  const o = { month: 'short', day: 'numeric', timeZone: 'UTC' };
+  return `${a.toLocaleDateString('en-US', o)} – ${b.toLocaleDateString('en-US', { ...o, year: 'numeric' })}`;
+}
+function diffDays(a, b) { return Math.round((b - a) / 86400000); }
+function addDays(d, n) { return new Date(d.getTime() + n * 86400000); }
+
+/* ─── Calculations ─── */
+function insights(recs) {
+  const sorted = [...recs]
+    .filter(r => r.start_date && r.end_date)
+    .sort((a, b) => parseDate(a.start_date) - parseDate(b.start_date));
+
+  if (!sorted.length) return null;
+
+  const lastStart = parseDate(sorted[sorted.length - 1].start_date);
+  const durations = sorted.map(r => diffDays(parseDate(r.start_date), parseDate(r.end_date)) + 1);
+  const avgDuration = Math.round(durations.reduce((s, x) => s + x, 0) / durations.length);
+
+  let avgCycle = null;
+  if (sorted.length >= 2) {
+    const lens = [];
+    for (let i = 1; i < sorted.length; i++) {
+      lens.push(diffDays(parseDate(sorted[i - 1].start_date), parseDate(sorted[i].start_date)));
+    }
+    avgCycle = Math.round(lens.reduce((s, x) => s + x, 0) / lens.length);
+  }
+
+  let nextPeriod = null;
+  let ovulation = null;
+  let fertileStart = null;
+  let fertileEnd = null;
+  let pmsStart = null;
+  let pmsEnd = null;
+
+  if (avgCycle) {
+    nextPeriod = addDays(lastStart, avgCycle);
+    ovulation = addDays(nextPeriod, -14);
+    fertileStart = addDays(ovulation, -5);
+    fertileEnd = addDays(ovulation, 1);
+    pmsStart = addDays(nextPeriod, -7);
+    pmsEnd = addDays(nextPeriod, -1);
+  }
+
+  return {
+    lastStart,
+    avgDuration,
+    avgCycle,
+    nextPeriod,
+    ovulation,
+    fertileStart,
+    fertileEnd,
+    pmsStart,
+    pmsEnd
+  };
+}
+
+/* ─── Render insights ─── */
+function renderInsights() {
+  const ins = insights(records);
+
+  if (!ins) {
+    [vLast, vNext, vCycle, vDur, vOvul, vFertile, vPms].forEach(el => (el.textContent = '—'));
+    noticeEl.classList.remove('hidden');
+    noticeEl.textContent = 'Add at least 2 records to see cycle predictions.';
+    return;
+  }
+
+  vLast.textContent = fmtDate(ins.lastStart);
+  vDur.textContent = `${ins.avgDuration} day${ins.avgDuration !== 1 ? 's' : ''}`;
+
+  if (ins.avgCycle) {
+    vCycle.textContent = `${ins.avgCycle} days`;
+    vNext.textContent = fmtDate(ins.nextPeriod);
+    vOvul.textContent = fmtDate(ins.ovulation);
+    vFertile.textContent = fmtRange(ins.fertileStart, ins.fertileEnd);
+    vPms.textContent = fmtRange(ins.pmsStart, ins.pmsEnd);
+    noticeEl.classList.add('hidden');
+  } else {
+    [vCycle, vNext, vOvul, vFertile, vPms].forEach(el => (el.textContent = 'Need ≥2 records'));
+    noticeEl.classList.remove('hidden');
+    noticeEl.textContent = 'Add one more record to unlock cycle predictions.';
+  }
+}
+
+/* ─── Render records ─── */
+function esc(s) {
+  const d = document.createElement('div');
+  d.appendChild(document.createTextNode(s));
+  return d.innerHTML;
+}
+
+function renderRecords() {
+  const sorted = [...records].sort((a, b) => parseDate(b.start_date) - parseDate(a.start_date));
+  loadingEl.classList.add('hidden');
+
+  if (!sorted.length) {
+    emptyEl.classList.remove('hidden');
+    listEl.classList.add('hidden');
+    countEl.textContent = '';
+    return;
+  }
+
+  emptyEl.classList.add('hidden');
+  listEl.classList.remove('hidden');
+  countEl.textContent = `${sorted.length} record${sorted.length !== 1 ? 's' : ''}`;
+  listEl.innerHTML = '';
+
+  sorted.forEach((r, i) => {
+    const sd = parseDate(r.start_date);
+    const ed = parseDate(r.end_date);
+    const dur = diffDays(sd, ed) + 1;
+    const li = document.createElement('li');
+    li.className = 'record-item';
+    li.dataset.id = r.id;
+    li.style.animationDelay = `${i * 40}ms`;
+    li.innerHTML = `
+      <div>
+        <div class="record-dates">${fmtRange(sd, ed)}</div>
+        <div class="record-duration">${dur} day${dur !== 1 ? 's' : ''}</div>
+        ${r.notes ? `<div class="record-notes">${esc(r.notes)}</div>` : ''}
+      </div>
+      <div class="record-actions">
+        <button class="btn btn-icon edit-btn" title="Edit" data-id="${r.id}">✏️</button>
+        <button class="btn btn-icon delete-btn" title="Delete" data-id="${r.id}">🗑️</button>
+      </div>`;
+    listEl.appendChild(li);
+  });
+}
+
+function render() {
+  renderInsights();
+  renderRecords();
+}
+
+/* ─── localStorage ─── */
+function lsLoad() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
+  catch { return []; }
+}
+function lsSave(d) { localStorage.setItem(LS_KEY, JSON.stringify(d)); }
+function lsInsert(p) {
+  const r = { id: crypto.randomUUID(), created_at: new Date().toISOString(), ...p };
+  const d = lsLoad();
+  d.push(r);
+  lsSave(d);
+  return r;
+}
+function lsUpdate(id, p) {
+  const d = lsLoad().map(r => r.id === id ? { ...r, ...p } : r);
+  lsSave(d);
+  return d.find(r => r.id === id);
+}
+function lsDelete(id) { lsSave(lsLoad().filter(r => r.id !== id)); }
+
+/* ─── Supabase ─── */
+const sbH = () => ({
+  apikey: SUPABASE_KEY,
+  Authorization: `Bearer ${SUPABASE_KEY}`,
+  'Content-Type': 'application/json',
+  Prefer: 'return=representation'
+});
+
+async function sbReq(path, opts = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: { ...sbH(), ...opts.headers }
+  });
+
+  if (!res.ok) {
+    let m = `HTTP ${res.status}`;
+    try {
+      const e = await res.json();
+      m = e.message || m;
+    } catch {}
+    throw new Error(m);
+  }
+
+  const t = await res.text();
+  return t ? JSON.parse(t) : [];
+}
+
+/* ─── Unified API ─── */
+const api = {
+  load: () => USE_SUPABASE ? sbReq(`${TABLE}?order=start_date.desc`) : lsLoad(),
+  insert: p => USE_SUPABASE ? sbReq(TABLE, { method: 'POST', body: JSON.stringify(p) }).then(r => r[0]) : lsInsert(p),
+  update: (id, p) => USE_SUPABASE ? sbReq(`${TABLE}?id=eq.${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify(p) }).then(r => r[0]) : lsUpdate(id, p),
+  delete: id => USE_SUPABASE ? sbReq(`${TABLE}?id=eq.${encodeURIComponent(id)}`, { method: 'DELETE' }) : lsDelete(id),
+};
+
+/* ─── Sync badge ─── */
+function setSync(state) {
+  syncEl.classList.remove('hidden');
+  const c = { loading: '#c49aab', synced: '#8aac9a', local: '#c49aab', error: '#c0392b' };
+  const l = { loading: 'Syncing…', synced: 'Synced', local: 'Local mode', error: 'Offline' };
+  syncDotEl.style.background = c[state];
+  syncLabelEl.textContent = l[state];
+}
+
+/* ─── Theme ─── */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  themeToggle.setAttribute('title', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+}
+
+function getPreferredTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved === 'light' || saved === 'dark') return saved;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function initTheme() {
+  applyTheme(getPreferredTheme());
+}
+
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+});
+
+/* ─── Init ─── */
+async function init() {
+  setSync('loading');
+  try {
+    records = await api.load();
+    setSync(USE_SUPABASE ? 'synced' : 'local');
+  } catch (err) {
+    console.error(err);
+    records = lsLoad();
+    setSync('error');
+    toast('Could not reach cloud – showing local data.', 'error');
+  }
+  render();
+}
+
+/* ─── Validation ─── */
+function clearErr() {
+  errStart.textContent = '';
+  errEnd.textContent = '';
+  errForm.textContent = '';
+  startInput.classList.remove('invalid');
+  endInput.classList.remove('invalid');
+}
+
+function validate() {
+  clearErr();
+  let ok = true;
+  const sv = startInput.value.trim();
+  const ev = endInput.value.trim();
+
+  if (!sv) {
+    errStart.textContent = 'Start date is required.';
+    startInput.classList.add('invalid');
+    ok = false;
+  }
+  if (!ev) {
+    errEnd.textContent = 'End date is required.';
+    endInput.classList.add('invalid');
+    ok = false;
+  }
+  if (sv && ev && ev < sv) {
+    errEnd.textContent = 'End date cannot be before start date.';
+    endInput.classList.add('invalid');
+    ok = false;
+  }
+  if (sv) {
+    const sd = parseDate(sv);
+    const tom = new Date();
+    tom.setDate(tom.getDate() + 1);
+    if (sd > tom) {
+      errStart.textContent = 'Start date cannot be in the future.';
+      startInput.classList.add('invalid');
+      ok = false;
+    }
+  }
+  return ok;
+}
+
+/* ─── Submit ─── */
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (submitting || !validate()) return;
+
+  const payload = {
+    start_date: startInput.value.trim(),
+    end_date: endInput.value.trim(),
+    notes: notesInput.value.trim() || null
+  };
+  const editId = editIdInput.value;
+
+  submitting = true;
+  setLoad(true);
+
+  try {
+    if (editId) {
+      const up = await api.update(editId, payload);
+      records = records.map(r => r.id === editId ? { ...r, ...up } : r);
+      toast('Record updated.', 'success');
+      clearHighlight();
+    } else {
+      if (records.find(r => r.start_date === payload.start_date)) {
+        errForm.textContent = 'A record with this start date already exists.';
+        setLoad(false);
+        submitting = false;
+        return;
+      }
+      records.push(await api.insert(payload));
+      toast('Record saved!', 'success');
+    }
+    resetForm();
+    render();
+  } catch (err) {
+    console.error(err);
+    errForm.textContent = `Save failed: ${err.message}`;
+  } finally {
+    submitting = false;
+    setLoad(false);
+  }
+});
+
+function setLoad(on) {
+  submitBtn.querySelector('.btn-text').classList.toggle('hidden', on);
+  submitBtn.querySelector('.btn-spinner').classList.toggle('hidden', !on);
+  submitBtn.disabled = on;
+}
+
+/* ─── Edit ─── */
+function startEdit(id) {
+  const r = records.find(x => x.id === id);
+  if (!r) return;
+
+  editIdInput.value = id;
+  startInput.value = r.start_date;
+  endInput.value = r.end_date;
+  notesInput.value = r.notes || '';
+  formTitle.textContent = 'Edit Record';
+  cancelBtn.style.display = '';
+  clearErr();
+  clearHighlight();
+
+  const el = listEl.querySelector(`[data-id="${id}"]`);
+  if (el) el.classList.add('editing-target');
+
+  document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetForm() {
+  form.reset();
+  editIdInput.value = '';
+  formTitle.textContent = 'Log a Period';
+  cancelBtn.style.display = 'none';
+  clearErr();
+  clearHighlight();
+}
+
+function clearHighlight() {
+  listEl.querySelectorAll('.editing-target').forEach(el => el.classList.remove('editing-target'));
+}
+
+cancelBtn.addEventListener('click', resetForm);
+
+/* ─── Delete ─── */
+function openModal(id) {
+  deletingId = id;
+  modalEl.classList.remove('hidden');
+  confirmDelEl.focus();
+}
+
+function closeModal() {
+  modalEl.classList.add('hidden');
+  deletingId = null;
+}
+
+confirmDelEl.addEventListener('click', async () => {
+  if (!deletingId) return;
+  const id = deletingId;
+  closeModal();
+
+  try {
+    await api.delete(id);
+    records = records.filter(r => r.id !== id);
+    if (editIdInput.value === id) resetForm();
+    toast('Record deleted.', 'success');
+    render();
+  } catch (err) {
+    toast(`Delete failed: ${err.message}`, 'error');
+  }
+});
+
+cancelDelEl.addEventListener('click', closeModal);
+modalEl.addEventListener('click', e => { if (e.target === modalEl) closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) closeModal();
+});
+
+/* ─── List delegation ─── */
+listEl.addEventListener('click', e => {
+  const eb = e.target.closest('.edit-btn');
+  const db = e.target.closest('.delete-btn');
+  if (eb) startEdit(eb.dataset.id);
+  if (db) openModal(db.dataset.id);
+});
+
+/* ─── Toast ─── */
+let toastT;
+function toast(msg, type = '') {
+  clearTimeout(toastT);
+  toastEl.textContent = msg;
+  toastEl.className = `toast${type ? ' ' + type : ''}`;
+  toastEl.classList.remove('hidden');
+  toastT = setTimeout(() => toastEl.classList.add('hidden'), 3000);
+}
+
+initTheme();
+init();
+</script>
+</body>
+</html>

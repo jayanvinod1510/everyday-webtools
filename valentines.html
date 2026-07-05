@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Valentine's Invitation For You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        :root {
+            --dark-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --gold: #d4af37;
+            --rose-gold: #e8b298;
+            --deep-rose: #8b2635;
+            --accent-dark: #2a1a1a;
+            --text-light: #f5f5f5;
+            --text-muted: #a0a0a0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 38, 53, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(232, 178, 152, 0.08) 0%, transparent 50%);
+            animation: bgShift 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes bgShift {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        /* Floating Hearts Background */
+        .heart-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: var(--gold);
+            opacity: 0.1;
+            animation: floatHeart 15s infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--card-bg) 0%, var(--accent-dark) 100%);
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 40px 20px;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .sidebar-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .valentine-day {
+            margin-bottom: 28px;
+            padding: 16px;
+            background: rgba(212, 175, 55, 0.05);
+            border-left: 2px solid var(--gold);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .valentine-day:hover {
+            background: rgba(212, 175, 55, 0.12);
+            transform: translateX(5px);
+            border-left-color: var(--rose-gold);
+        }
+
+        .valentine-day .day-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--rose-gold);
+            margin-bottom: 4px;
+        }
+
+        .valentine-day .day-date {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .valentine-day .day-activity {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 101;
+            background: var(--card-bg);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 0;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .decorative-line {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 0 auto 30px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; box-shadow: 0 0 20px var(--gold); }
+        }
+
+        .hero-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--rose-gold);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            animation: fadeInUp 1s ease 0.1s backwards;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 72px;
+            font-weight: 300;
+            color: var(--gold);
+            margin-bottom: 20px;
+            line-height: 1.2;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+
+        .hero-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--rose-gold);
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+
+        .hero-message {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: fadeInUp 1s ease 0.6s backwards;
+        }
+
+        /* Countdown Section */
+        .countdown-section {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--accent-dark) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 50px 40px;
+            margin: 60px 0;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 1s ease 0.8s backwards;
+        }
+
+        .countdown-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 30px;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-unit {
+            min-width: 100px;
+        }
+
+        .countdown-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 56px;
+            font-weight: 700;
+            color: var(--rose-gold);
+            display: block;
+            text-shadow: 0 0 20px rgba(232, 178, 152, 0.3);
+        }
+
+        .countdown-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+
+        /* RSVP Section */
+        .rsvp-section {
+            background: linear-gradient(135deg, var(--accent-dark) 0%, var(--card-bg) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 50px 40px;
+            margin: 60px 0;
+            animation: fadeInUp 1s ease 1s backwards;
+        }
+
+        .rsvp-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 40px;
+            font-weight: 600;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .rsvp-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+
+        .rsvp-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: var(--rose-gold);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 16px;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .response-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .response-btn {
+            flex: 1;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .response-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .response-btn.selected {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--rose-gold) 100%);
+            border-color: var(--gold);
+            color: var(--dark-bg);
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--rose-gold) 100%);
+            border: none;
+            border-radius: 8px;
+            color: var(--dark-bg);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(212, 175, 55, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn.loading {
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        .submit-btn .btn-content {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* Sending entertainment panel */
+        .rsvp-sending {
+            display: none;
+            text-align: center;
+            padding: 48px 24px;
+            min-height: 200px;
+        }
+
+        .rsvp-sending.active {
+            display: block;
+            animation: sending-fade-in 0.5s ease;
+        }
+
+        @keyframes sending-fade-in {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .sending-hearts {
+            position: relative;
+            height: 140px;
+            margin-bottom: 24px;
+        }
+
+        .sending-hearts .heart {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            font-size: 0;
+            color: var(--gold);
+            opacity: 0;
+            animation: heart-float 3.5s ease-in infinite;
+            text-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+        }
+
+        .sending-hearts .heart-1 { font-size: 18px; animation-delay: 0s; margin-left: -60px; }
+        .sending-hearts .heart-2 { font-size: 14px; animation-delay: 0.4s; margin-left: -30px; }
+        .sending-hearts .heart-3 { font-size: 22px; animation-delay: 0.8s; margin-left: 0; }
+        .sending-hearts .heart-4 { font-size: 12px; animation-delay: 1.2s; margin-left: 35px; }
+        .sending-hearts .heart-5 { font-size: 20px; animation-delay: 1.6s; margin-left: 65px; }
+        .sending-hearts .heart-6 { font-size: 16px; animation-delay: 2s; margin-left: -75px; }
+        .sending-hearts .heart-7 { font-size: 14px; animation-delay: 2.3s; margin-left: -45px; }
+        .sending-hearts .heart-8 { font-size: 20px; animation-delay: 2.6s; margin-left: 25px; }
+        .sending-hearts .heart-9 { font-size: 12px; animation-delay: 2.9s; margin-left: 55px; }
+        .sending-hearts .heart-10 { font-size: 18px; animation-delay: 3.2s; margin-left: 80px; }
+
+        @keyframes heart-float {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.3);
+            }
+            15% {
+                opacity: 0.9;
+                transform: translateY(-20px) scale(1);
+            }
+            85% {
+                opacity: 0.7;
+                transform: translateY(-120px) scale(0.9);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-140px) scale(0.4);
+            }
+        }
+
+        .sending-message {
+            font-size: 17px;
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            margin: 0;
+            min-height: 1.5em;
+            animation: message-pulse 2s ease-in-out infinite;
+            transition: opacity 0.3s ease;
+        }
+
+        @keyframes message-pulse {
+            0%, 100% { opacity: 0.85; }
+            50% { opacity: 1; }
+        }
+
+        /* Message Reveal Section */
+        .message-reveal {
+            display: none;
+            background: linear-gradient(135deg, var(--deep-rose) 0%, var(--accent-dark) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 60px 40px;
+            margin: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: revealAnimation 1s ease;
+        }
+
+        .message-reveal.show {
+            display: block;
+        }
+
+        @keyframes revealAnimation {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .message-reveal::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .message-reveal-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .message-icon {
+            font-size: 60px;
+            margin-bottom: 24px;
+            animation: heartBeat 1.5s ease infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40% { transform: scale(1); }
+        }
+
+        .message-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 42px;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 24px;
+        }
+
+        .message-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .message-reveal-actions {
+            margin-top: 28px;
+        }
+
+        .changed-mind-btn {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--rose-gold) 100%);
+            border: none;
+            border-radius: 50px;
+            color: var(--dark-bg);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+        }
+
+        .changed-mind-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Sidebar hidden until she says Absolutely Yes */
+        body.rsvp-pending .sidebar {
+            display: none !important;
+        }
+        body.rsvp-pending .menu-toggle {
+            display: none !important;
+        }
+        body.rsvp-pending .main-content {
+            margin-left: 0 !important;
+        }
+        body.rsvp-pending .countdown-section {
+            display: none !important;
+        }
+        body.already-said-yes .rsvp-section {
+            display: none !important;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            margin-top: 80px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            .hero {
+                padding: 40px 0;
+            }
+
+            .hero-title {
+                font-size: 48px;
+            }
+
+            .hero-subtitle {
+                font-size: 22px;
+            }
+
+            .countdown-number {
+                font-size: 42px;
+            }
+
+            .countdown-unit {
+                min-width: 80px;
+            }
+
+            .response-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--rose-gold);
+        }
+
+        /* Day Details Section */
+        .day-details {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--accent-dark) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 50px 40px;
+            margin: 40px 0 60px;
+            position: relative;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .day-details.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-details {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: var(--gold);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-details:hover {
+            background: var(--gold);
+            color: var(--dark-bg);
+            transform: rotate(90deg);
+        }
+
+        .day-details-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .day-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .day-details-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 42px;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .day-details-date {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .day-countdown {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .countdown-label-main {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            color: var(--rose-gold);
+            margin-bottom: 24px;
+        }
+
+        .day-countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .clues-section {
+            margin-bottom: 40px;
+        }
+
+        .clues-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .clues-container {
+            display: grid;
+            gap: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .clue {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+            animation: clueAppear 0.5s ease;
+        }
+
+        @keyframes clueAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .clue.locked {
+            opacity: 0.5;
+        }
+
+        .clue.unlocked {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .clue-icon {
+            font-size: 32px;
+            min-width: 40px;
+        }
+
+        .clue-text {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        .clue-unlock-time {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: right;
+            margin-top: 8px;
+        }
+
+        .reveal-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .reveal-btn {
+            padding: 20px 50px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--rose-gold) 100%);
+            border: none;
+            border-radius: 50px;
+            color: var(--dark-bg);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(212, 175, 55, 0.6);
+        }
+
+        .activity-reveal {
+            background: linear-gradient(135deg, var(--deep-rose) 0%, var(--accent-dark) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 40px;
+            margin-top: 30px;
+            animation: revealAnimation 0.8s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-reveal::before {
+            content: '✨';
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.1;
+            top: -20px;
+            right: -20px;
+            animation: rotate 10s linear infinite;
+        }
+
+        .activity-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .activity-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .activity-description {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-light);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Hug Day only: game rules UI */
+        .game-rules-wrap {
+            margin-top: 32px;
+            padding-top: 28px;
+            border-top: 1px solid rgba(212, 175, 55, 0.35);
+        }
+
+        .game-rules-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--rose-gold);
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .game-rules-list {
+            list-style: none;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .game-rules-list li {
+            position: relative;
+            padding: 14px 18px 14px 48px;
+            margin-bottom: 12px;
+            background: rgba(212, 175, 55, 0.06);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-light);
+            transition: all 0.25s ease;
+        }
+
+        .game-rules-list li:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.35);
+            transform: translateX(4px);
+        }
+
+        .game-rules-list li::before {
+            content: attr(data-rule-num);
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--rose-gold) 100%);
+            color: var(--dark-bg);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Hug Day only: penalties UI */
+        .penalties-wrap {
+            margin-top: 28px;
+            padding-top: 28px;
+            border-top: 1px solid rgba(212, 175, 55, 0.35);
+        }
+
+        .penalties-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--rose-gold);
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .penalties-list {
+            list-style: none;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .penalties-list li {
+            position: relative;
+            padding: 14px 18px 14px 48px;
+            margin-bottom: 12px;
+            background: rgba(139, 38, 53, 0.12);
+            border: 1px solid rgba(139, 38, 53, 0.35);
+            border-radius: 10px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-light);
+            transition: all 0.25s ease;
+        }
+
+        .penalties-list li:hover {
+            background: rgba(139, 38, 53, 0.18);
+            border-color: rgba(139, 38, 53, 0.5);
+            transform: translateX(4px);
+        }
+
+        .penalties-list li::before {
+            content: '⚠';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(139, 38, 53, 0.4);
+            color: var(--rose-gold);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Updates */
+        @media (max-width: 768px) {
+            .day-details {
+                padding: 40px 20px;
+            }
+
+            .day-details-title {
+                font-size: 32px;
+            }
+
+            .day-icon {
+                font-size: 48px;
+            }
+
+            .clue {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .reveal-btn {
+                padding: 16px 40px;
+                font-size: 16px;
+            }
+
+            .game-rules-list li {
+                padding-left: 44px;
+                font-size: 14px;
+            }
+
+            .game-rules-list li::before {
+                width: 22px;
+                height: 22px;
+                font-size: 11px;
+            }
+
+            .penalties-list li {
+                padding-left: 44px;
+                font-size: 14px;
+            }
+
+            .penalties-list li::before {
+                width: 22px;
+                height: 22px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        (function() {
+            if (localStorage.getItem('valentine2026RSVP') === 'yes') {
+                document.body.classList.add('already-said-yes');
+            } else {
+                document.body.classList.add('rsvp-pending');
+            }
+        })();
+    </script>
+    <!-- Floating Hearts Background -->
+    <div class="heart-bg" id="heartBg"></div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        ☰ 
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Valentine's Week</h2>
+            <p>February 7-14, 2026</p>
+        </div>
+        
+        <div class="valentine-day" data-day="rose" onclick="openDayDetails('rose')">
+            <div class="day-name">🌹 Rose Day</div>
+            <div class="day-date">February 7</div>
+            <div class="day-activity">Click to reveal the surprise activity...</div>
+        </div>
+
+        <div class="valentine-day" data-day="propose" onclick="openDayDetails('propose')">
+            <div class="day-name">💍 Propose Day</div>
+            <div class="day-date">February 8</div>
+            <div class="day-activity">Click to reveal the surprise activity...</div>
+        </div>
+
+        <div class="valentine-day" data-day="chocolate" onclick="openDayDetails('chocolate')">
+            <div class="day-name">🍫 Chocolate Day</div>
+            <div class="day-date">February 9</div>
+            <div class="day-activity">Click to reveal the surprise activity...</div>
+        </div>
+
+        <div class="valentine-day" data-day="teddy" onclick="openDayDetails('teddy')">
+            <div class="day-name">🧸 Teddy Day</div>
+            <div class="day-date">February 10</div>
+            <div class="day-activity">Click to reveal the surprise activity...</div>
+        </div>
+
+        <div class="valentine-day" data-day="promise" onclick="openDayDetails('promise')">
+            <div class="day-name">🤝 Promise Day</div>
+            <div class="day-date">February 11</div>
+            <div class="day-activity">Click to reveal the surprise activity...</div>
+        </div>
+
+        <div class="valentine-day" data-day="hug" onclick="openDayDetails('hug')">
+            <div class="day-name">🤗 Hug Day</div>
+            <div class="day-date">February 12</div>
+            <div class="day-activity">Click to reveal the surprise activity...</div>
+        </div>
+
+        <div class="valentine-day" data-day="kiss" onclick="openDayDetails('kiss')">
+            <div class="day-name">💋 Kiss Day</div>
+            <div class="day-date">February 13</div>
+            <div class="day-activity">Click to reveal the surprise activity...</div>
+        </div>
+
+        <div class="valentine-day" data-day="valentine" onclick="openDayDetails('valentine')">
+            <div class="day-name">❤️ Valentine's Day</div>
+            <div class="day-date">February 14</div>
+            <div class="day-activity">Click to reveal the surprise activity...</div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Day Details Section (Hidden Initially) -->
+            <section class="day-details" id="dayDetails">
+                <button class="close-details" onclick="closeDayDetails()">✕</button>
+                
+                <div class="day-details-header">
+                    <div class="day-icon" id="dayIcon">🌹</div>
+                    <h2 class="day-details-title" id="dayTitle">Rose Day</h2>
+                    <p class="day-details-date" id="dayDate">February 7, 2026</p>
+                </div>
+
+                <div class="day-countdown">
+                    <h3 class="countdown-label-main">Time Until Surprise Reveal</h3>
+                    <div class="day-countdown-timer" id="dayCountdownTimer">
+                        <div class="countdown-unit">
+                            <span class="countdown-number" id="dayDays">00</span>
+                            <span class="countdown-label">Days</span>
+                        </div>
+                        <div class="countdown-unit">
+                            <span class="countdown-number" id="dayHours">00</span>
+                            <span class="countdown-label">Hours</span>
+                        </div>
+                        <div class="countdown-unit">
+                            <span class="countdown-number" id="dayMinutes">00</span>
+                            <span class="countdown-label">Minutes</span>
+                        </div>
+                        <div class="countdown-unit">
+                            <span class="countdown-number" id="daySeconds">00</span>
+                            <span class="countdown-label">Seconds</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clues-section" id="cluesSection">
+                    <h3 class="clues-title">🔍 Clues Revealed So Far</h3>
+                    <div class="clues-container" id="cluesContainer">
+                        <div class="clue locked">
+                            <div class="clue-icon">🔒</div>
+                            <p class="clue-text">First clue unlocks soon...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal-section" id="revealSection" style="display: none;">
+                    <button class="reveal-btn" onclick="revealActivity()">
+                        ✨ Reveal the Activity ✨
+                    </button>
+                </div>
+
+                <div class="activity-reveal" id="activityReveal" style="display: none;">
+                    <div class="activity-content">
+                        <h3 class="activity-title">Today's Special Activity</h3>
+                        <p class="activity-description" id="activityDescription"></p>
+                        <div class="game-rules-wrap" id="gameRulesWrap" style="display: none;">
+                            <h4 class="game-rules-title">🤗 Rules of the Game</h4>
+                            <ol class="game-rules-list" id="gameRulesList"></ol>
+                        </div>
+                        <div class="penalties-wrap" id="penaltiesWrap" style="display: none;">
+                            <h4 class="penalties-title">⚠️ Penalties</h4>
+                            <ul class="penalties-list" id="penaltiesList"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="decorative-line"></div>
+                <p class="hero-name">Rakshitha</p>
+                <h1 class="hero-title">You're Invited</h1>
+                <p class="hero-subtitle">To A Week of Love & Romance</p>
+                <p class="hero-message">
+                    My dearest love, join me for an unforgettable Valentine's experience. 
+                    Starting the evening of February 7th and continuing through Valentine's Day, 
+                    I've planned something special—a week-long celebration of us. Every day brings 
+                    a new surprise, a new memory, a new reason to fall deeper in love with you.
+                </p>
+            </section>
+
+            <!-- Countdown Section -->
+            <section class="countdown-section">
+                <h2 class="countdown-title">Counting Down to Our Special Day</h2>
+                <div class="countdown-timer" id="countdown">
+                    <div class="countdown-unit">
+                        <span class="countdown-number" id="days">00</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <div class="countdown-unit">
+                        <span class="countdown-number" id="hours">00</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <div class="countdown-unit">
+                        <span class="countdown-number" id="minutes">00</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <div class="countdown-unit">
+                        <span class="countdown-number" id="seconds">00</span>
+                        <span class="countdown-label">Seconds</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RSVP Section -->
+            <section class="rsvp-section">
+                <h2 class="rsvp-title">Will You Join Me?</h2>
+                <p class="rsvp-subtitle">Let me know if you can make it to our special celebration</p>
+                
+                <div class="rsvp-form" id="rsvpForm">
+                    <div class="form-group">
+                        <label class="form-label">Your Response *</label>
+                        <div class="response-buttons">
+                            <button type="button" class="response-btn" data-response="yes">
+                                ✓ Absolutely Yes!
+                            </button>
+                            <button type="button" class="response-btn" data-response="maybe">
+                                ? Let Me Check
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Any Special Requests?</label>
+                        <textarea class="form-input form-textarea" id="specialRequests" placeholder="Let me know if there's anything specific you'd like..."></textarea>
+                    </div>
+
+                    <button class="submit-btn" id="submitBtn" disabled><span class="btn-content">Submit RSVP</span></button>
+
+                    <div class="rsvp-sending" id="rsvpSending">
+                        <div class="sending-hearts" aria-hidden="true">
+                            <span class="heart heart-1">♥</span>
+                            <span class="heart heart-2">♥</span>
+                            <span class="heart heart-3">♥</span>
+                            <span class="heart heart-4">♥</span>
+                            <span class="heart heart-5">♥</span>
+                            <span class="heart heart-6">♥</span>
+                            <span class="heart heart-7">♥</span>
+                            <span class="heart heart-8">♥</span>
+                            <span class="heart heart-9">♥</span>
+                            <span class="heart heart-10">♥</span>
+                        </div>
+                        <p class="sending-message" id="sendingMessage">Sealing your reply with love...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Message Reveal Section (Hidden Initially) – content set by JS based on RSVP choice -->
+            <section class="message-reveal" id="messageReveal">
+                <div class="message-reveal-content">
+                    <div class="message-icon" id="messageRevealIcon">💝</div>
+                    <h2 class="message-title" id="messageRevealTitle">A Message From My Heart</h2>
+                    <p class="message-text" id="messageRevealText"></p>
+                    <div class="message-reveal-actions" id="messageRevealActions"></div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Made with endless love | Valentine's 2026</p>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        // Valentine's Days Data with activities and clues
+        const valentineDays = {
+            rose: {
+                name: "Rose Day",
+                icon: "🌹",
+                date: "2026-02-07T02:15:00",
+                activity: "Build a beautiful LEGO Orchids set together! We'll spend the afternoon creating something that blooms forever, just like our love. Each piece we connect is a moment we share, building something beautiful that will remind us of this special day.",
+                clues: [
+                    { text: "Something that grows without needing water 🌱", unlockHours: 50 },
+                    { text: "Many small parts, one quiet afternoon 🧩", unlockHours: 24 },
+                    { text: "Built by hand, inspired by nature 🏗️", unlockHours: 12 },
+                    { text: "A flower that blooms forever—because we make it 💝", unlockHours: 1 }
+                ]
+            },
+            propose: {
+                name: "Propose Day",
+                icon: "💍",
+                date: "2026-02-08T13:00:00",
+                activity: "We're going back to the first place we ever went on a date. It was supposed to be a fake date—but my heart was already yours. You had no idea then; you figured it out later, and you fell for me too. So on Propose Day we'll return to where our story really began. Same place, but this time there's nothing fake about it: just us, the memories of that first day, and everything we've become since. I'll make it special—a little like that first time, and a lot like the forever I want with you.",
+                clues: [
+                    { text: "Where the room noticed before we did 📍", unlockHours: 72 },
+                    { text: "Where it was meant to be simple 📍", unlockHours: 48 },
+                    { text: "The first place we went together—we're going back there 🔁", unlockHours: 24 },
+                    { text: "Where the fake one ended and my real one began 💕", unlockHours: 6 }
+                ]
+            },
+            chocolate: {
+                name: "Chocolate Day",
+                icon: "🍫",
+                date: "2026-02-09T22:20:00",
+                activity: "Chocolate fondue paradise! Rich, velvety melted chocolate with fresh strawberries and fluffy marshmallows. We'll dip, laugh, and probably make a delicious mess together. The sweetest evening with the sweetest person.",
+                clues: [
+                    { text: "Something slow, warm, and impossible to rush 🫕", unlockHours: 75 },
+                    { text: "Where patience makes things better 🍓", unlockHours: 48 },
+                    // { text: "Soft meets flowing, and neither stays clean ☁️", unlockHours: 24 },
+                    { text: "Textures matter more than technique tonight 🎭", unlockHours: 24 },
+                    // { text: "Sweet indulgence, sweeter company 💕", unlockHours: 12 }
+                    { text: "It won’t be neat, and that’s half the point 💕", unlockHours: 12 }
+                ]
+            },
+            teddy: {
+                name: "Teddy Day",
+                icon: "🧸",
+                date: "2026-02-10T17:00:00",
+                activity: "Let's create our own teddy bear using clay! We'll sculpt, laugh at our attempts, and end up with a unique creation that's imperfectly perfect - just like us. It'll be our handmade treasure, molded with love and definitely lots of laughter.",
+                clues: [
+                    { text: "Where hands do the talking and mess is expected 👐", unlockHours: 72 },
+                    { text: "The result matters less than the time lost inside it ⏳", unlockHours: 48 },
+                    { text: "It won’t be useful, impressive, or correct—and that’s intentional 🎭", unlockHours: 24 },
+                    { text: "Something small, personal, and hard to throw away 🤍", unlockHours: 12 }
+                ]
+            },
+            promise: {
+                name: "Promise Day",
+                icon: "🤝",
+                date: "2026-02-11T01:00:00",
+                activity: "We'll build a tiny café together — piece by piece, sticker by sticker. A small place that represents shared mornings, long conversations, and always choosing to sit with each other. Not written promises, but built ones — the kind we live every day.",
+                clues: [
+                    { text: "Not spoken. Not written. Chosen. 🤍", unlockHours: 72 },
+                    { text: "Something built slowly, meant to be returned to ☕", unlockHours: 48 },
+                    { text: "A place where time is meant to linger 🪑", unlockHours: 24 },
+                    { text: "Something small that quietly holds a big idea 🤍", unlockHours: 12 }
+                ]
+            },
+            // hug: {
+            //     name: "Hug Day",
+            //     icon: "🤗",
+            //     date: "2026-02-07T13:00:00",
+            //     activity: "A cozy blanket fort building session! We'll create our own little world with pillows, blankets, fairy lights, and spend the day wrapped in each other's arms watching our favorite movies. The best hugs come in fort form!",
+            //     gameRules: [
+            //         "Build the fort together—no one is the boss.",
+            //         "Once inside, phones go in the \"cozy jail\" (face down) until the first movie ends.",
+            //         "The person who grabs the last blanket gets to pick the first movie.",
+            //         "Hugs are mandatory at least once per movie. No exceptions.",
+            //         "Whoever falls asleep first gets to choose what we order for dinner."
+            //     ],
+            //     clues: [
+            //         { text: "A space made smaller on purpose 🤍", unlockHours: 72 },
+            //         { text: "Where the outside world is politely ignored 🛋️", unlockHours: 48 },
+            //         { text: "Built like a secret, kept like a comfort ✨", unlockHours: 24 },
+            //         { text: "Our own cozy hideaway—made for hugs 🤗", unlockHours: 12 }
+            //     ]
+            // },
+            hug: {
+                name: "Hug Day",
+                icon: "🤗",
+                date: "2026-02-12T09:00:00",
+                activity: "The 3-Hug Rule. Each of us gets exactly three silent hugs for the entire day — no warning, no talking, no distractions. When a hug is called, everything pauses. Just closeness, eye contact, and warmth. Limited chances make every hug intentional, unspoken, and impossible to waste.",
+                gameRules: [
+                    "Each person gets exactly three Silent Hug tokens for the entire day — use them wisely.",
+                    "A Silent Hug can be initiated anytime, anywhere, without warning.",
+                    "Once a Silent Hug starts, both people must pause everything immediately.",
+                    "No talking, no phones, no distractions during the hug.",
+                    "A hug only ends when both people feel ready to let go."
+                ],
+                penalties: [
+                    "If anyone talks during a Silent Hug, they lose one remaining hug token.",
+                    "If a phone is touched during a hug, the other person earns an extra hug token.",
+                    "If a hug is rushed, the initiator owes a proper long hug later.",
+                    "If someone refuses a hug, they must initiate the next Silent Hug.",
+                    "If all hug tokens are used too early, no hugs until bedtime — anticipation is the punishment."
+                ],
+                clues: [
+                    { text: "Some things don’t need words at all 🤍", unlockHours: 72 },
+                    { text: "You won’t get unlimited chances today ⏳", unlockHours: 48 },
+                    { text: "When it happens, everything else must wait ✋", unlockHours: 24 },
+                    { text: "Hold me — quietly, and only when it truly matters 🤗", unlockHours: 12 }
+                ]
+            },
+            kiss: {
+                name: "Kiss Day",
+                icon: "💋",
+                date: "2026-02-13T11:00:00",
+                activity: "We arrive and decide not to rush anything. Low lights, something playing on the big screen, shared focus that slowly drifts. Curiosity turns into silence, silence turns into closeness, and the night does what it wants. Easy, unplanned, and a little dangerous in the best way",
+                clues: [
+                    { text: "A night that begins by settling in, not stepping out 🌒", unlockHours: 72 },
+                    { text: "Something intriguing opens, but it won’t be the main distraction 🗂️", unlockHours: 48 },
+                    { text: "A screen glows, attention wanders, pauses grow longer 🎬", unlockHours: 24 },
+                    { text: "Less watching, more feeling—exactly how it should be 💋", unlockHours: 12 }
+                ]
+            },
+            valentine: {
+                name: "Valentine's Day",
+                icon: "❤️",
+                date: "2026-02-14T00:00:00",
+                activity: "A day to slow down inside a place that already holds our story. We'll solve, write, think, and sit with our memories—no rush, no noise. Just warmth, reflection, and choosing each other in the quiet.",
+                clues: [
+                    { text: "Not about going somewhere—about staying with intention 🤍", unlockHours: 72 },
+                    { text: "Two minds, one table, a story unfolding slowly 🧩", unlockHours: 48 },
+                    { text: "Ink, silence, and thoughts we don’t usually pause for ✍️", unlockHours: 24 },
+                    { text: "A day to solve, write, and choose us—again ❤️", unlockHours: 12 }
+                ]
+            }
+        };
+
+        let currentDay = null;
+        let dayCountdownInterval = null;
+        let clueCheckInterval = null;
+
+        // Floating Hearts Animation
+        function createHearts() {
+            const heartBg = document.getElementById('heartBg');
+            const heartSymbols = ['♥', '❤', '💕', '💖', '💗', '💝'];
+            
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.animationDuration = (15 + Math.random() * 10) + 's';
+                heartBg.appendChild(heart);
+            }
+        }
+
+        // Main Countdown Timer
+        function updateCountdown() {
+            const valentinesDay = new Date('2026-02-14T00:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = valentinesDay - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = '<p style="color: var(--gold); font-size: 24px;">Happy Valentine\'s Day! ❤️</p>';
+            }
+        }
+
+        // Restore countdown timer DOM (it gets replaced when a day "arrives", so we need to restore when opening another day)
+        function restoreDayCountdownTimerDom() {
+            document.getElementById('dayCountdownTimer').innerHTML = `
+                <div class="countdown-unit">
+                    <span class="countdown-number" id="dayDays">00</span>
+                    <span class="countdown-label">Days</span>
+                </div>
+                <div class="countdown-unit">
+                    <span class="countdown-number" id="dayHours">00</span>
+                    <span class="countdown-label">Hours</span>
+                </div>
+                <div class="countdown-unit">
+                    <span class="countdown-number" id="dayMinutes">00</span>
+                    <span class="countdown-label">Minutes</span>
+                </div>
+                <div class="countdown-unit">
+                    <span class="countdown-number" id="daySeconds">00</span>
+                    <span class="countdown-label">Seconds</span>
+                </div>
+            `;
+        }
+
+        // Open Day Details
+        function openDayDetails(dayKey) {
+            currentDay = dayKey;
+            const day = valentineDays[dayKey];
+            
+            // Clear any existing intervals
+            if (dayCountdownInterval) clearInterval(dayCountdownInterval);
+            if (clueCheckInterval) clearInterval(clueCheckInterval);
+            
+            // Restore countdown timer DOM so dayDays/dayHours/dayMinutes/daySeconds exist (they are removed when "day has arrived" is shown)
+            restoreDayCountdownTimerDom();
+            
+            // Reset reveal sections first so each day starts with a clean state
+            document.getElementById('revealSection').style.display = 'none';
+            document.getElementById('activityReveal').style.display = 'none';
+            document.getElementById('activityDescription').textContent = '';
+            document.getElementById('gameRulesWrap').style.display = 'none';
+            document.getElementById('gameRulesList').innerHTML = '';
+            document.getElementById('penaltiesWrap').style.display = 'none';
+            document.getElementById('penaltiesList').innerHTML = '';
+            
+            // Update header
+            document.getElementById('dayIcon').textContent = day.icon;
+            document.getElementById('dayTitle').textContent = day.name;
+            const dateObj = new Date(day.date);
+            document.getElementById('dayDate').textContent = dateObj.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Show section
+            const detailsSection = document.getElementById('dayDetails');
+            detailsSection.classList.add('show');
+            
+            // Scroll to section
+            setTimeout(() => {
+                detailsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+            
+            // Start countdown
+            updateDayCountdown(day);
+            dayCountdownInterval = setInterval(() => updateDayCountdown(day), 1000);
+            
+            // Update clues for this day
+            updateClues(day);
+            clueCheckInterval = setInterval(() => updateClues(day), 60000); // Check every minute
+        }
+
+        // Close Day Details
+        function closeDayDetails() {
+            document.getElementById('dayDetails').classList.remove('show');
+            if (dayCountdownInterval) clearInterval(dayCountdownInterval);
+            if (clueCheckInterval) clearInterval(clueCheckInterval);
+            currentDay = null;
+        }
+
+        // Update Individual Day Countdown
+        function updateDayCountdown(day) {
+            const targetDate = new Date(day.date).getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                // Day has arrived - show reveal button
+                document.getElementById('dayCountdownTimer').innerHTML = 
+                    '<p style="color: var(--gold); font-size: 20px; grid-column: 1/-1;">🎉 The day has arrived! 🎉</p>';
+                document.getElementById('revealSection').style.display = 'block';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('dayDays').textContent = String(days).padStart(2, '0');
+            document.getElementById('dayHours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('dayMinutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('daySeconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        // Update Clues Based on Time
+        function updateClues(day) {
+            const targetDate = new Date(day.date).getTime();
+            const now = new Date().getTime();
+            const hoursUntil = (targetDate - now) / (1000 * 60 * 60);
+            const cluesContainer = document.getElementById('cluesContainer');
+            cluesContainer.innerHTML = '';
+
+            let hasUnlockedClue = false;
+
+            day.clues.forEach((clue, index) => {
+                const clueDiv = document.createElement('div');
+                
+                if (hoursUntil <= clue.unlockHours) {
+                    // Unlocked clue
+                    clueDiv.className = 'clue unlocked';
+                    clueDiv.innerHTML = `
+                        <div class="clue-icon">🔓</div>
+                        <div style="flex: 1;">
+                            <p class="clue-text">${clue.text}</p>
+                            <p class="clue-unlock-time">Unlocked!</p>
+                        </div>
+                    `;
+                    hasUnlockedClue = true;
+                } else {
+                    // Locked clue
+                    const unlockTime = Math.ceil(hoursUntil - clue.unlockHours);
+                    clueDiv.className = 'clue locked';
+                    clueDiv.innerHTML = `
+                        <div class="clue-icon">🔒</div>
+                        <div style="flex: 1;">
+                            <p class="clue-text">Clue ${index + 1} - Locked</p>
+                            <p class="clue-unlock-time">Unlocks in ${unlockTime} hours</p>
+                        </div>
+                    `;
+                }
+                
+                cluesContainer.appendChild(clueDiv);
+            });
+
+            // If no clues unlocked yet, show a placeholder
+            if (!hasUnlockedClue) {
+                cluesContainer.innerHTML = `
+                    <div class="clue locked">
+                        <div class="clue-icon">⏰</div>
+                        <div style="flex: 1;">
+                            <p class="clue-text">First clue for ${day.name} unlocks in ${Math.ceil(hoursUntil - day.clues[0].unlockHours)} hours!</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Reveal Activity
+        function revealActivity() {
+            const day = valentineDays[currentDay];
+            document.getElementById('activityDescription').textContent = day.activity;
+            document.getElementById('activityReveal').style.display = 'block';
+            document.getElementById('revealSection').style.display = 'none';
+
+            // Hug Day only: show game rules and penalties UI
+            const gameRulesWrap = document.getElementById('gameRulesWrap');
+            const gameRulesList = document.getElementById('gameRulesList');
+            const penaltiesWrap = document.getElementById('penaltiesWrap');
+            const penaltiesList = document.getElementById('penaltiesList');
+            if (currentDay === 'hug') {
+                if (day.gameRules && day.gameRules.length > 0) {
+                    gameRulesList.innerHTML = '';
+                    day.gameRules.forEach(function(rule, index) {
+                        const li = document.createElement('li');
+                        li.setAttribute('data-rule-num', index + 1);
+                        li.textContent = rule;
+                        gameRulesList.appendChild(li);
+                    });
+                    gameRulesWrap.style.display = 'block';
+                } else {
+                    gameRulesWrap.style.display = 'none';
+                    gameRulesList.innerHTML = '';
+                }
+                if (day.penalties && day.penalties.length > 0) {
+                    penaltiesList.innerHTML = '';
+                    day.penalties.forEach(function(penalty) {
+                        const li = document.createElement('li');
+                        li.textContent = penalty;
+                        penaltiesList.appendChild(li);
+                    });
+                    penaltiesWrap.style.display = 'block';
+                } else {
+                    penaltiesWrap.style.display = 'none';
+                    penaltiesList.innerHTML = '';
+                }
+            } else {
+                gameRulesWrap.style.display = 'none';
+                gameRulesList.innerHTML = '';
+                penaltiesWrap.style.display = 'none';
+                penaltiesList.innerHTML = '';
+            }
+            
+            // Scroll to revealed activity
+            setTimeout(() => {
+                document.getElementById('activityReveal').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 100);
+        }
+
+        // RSVP Form Logic – Formspree first, EmailJS as fallback
+        const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'; // optional: get from https://formspree.io
+        const EMAILJS_PUBLIC_KEY = 'oJEkbcCZqa8ux2je1';   // from https://dashboard.emailjs.com
+        const EMAILJS_SERVICE_ID = 'service_w1y698m';
+        const EMAILJS_TEMPLATE_ID = 'template_eyqwwrl'; // template vars: {{subject}}, {{response}}, {{message}}
+
+        async function sendRsvpEmail(subject, response, specialRequests) {
+            var payload = { _subject: subject, response: response, specialRequests: specialRequests || '(none)' };
+            if (FORMSPREE_ENDPOINT && FORMSPREE_ENDPOINT.indexOf('YOUR_FORM_ID') === -1) {
+                try {
+                    const res = await fetch(FORMSPREE_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) return true;
+                } catch (e) { console.warn('Formspree failed:', e.message); }
+            }
+            if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY.indexOf('YOUR_') === -1 && EMAILJS_SERVICE_ID.indexOf('YOUR_') === -1 && EMAILJS_TEMPLATE_ID.indexOf('YOUR_') === -1) {
+                try {
+                    emailjs.init(EMAILJS_PUBLIC_KEY);
+                    var result = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                        subject: subject,
+                        response: response,
+                        message: specialRequests || '(none)'
+                    });
+                    if (result && result.status === 200) return true;
+                } catch (e) {
+                    var msg = e && (e.text || e.message || (e.response && e.response.text) || JSON.stringify(e));
+                    console.warn('EmailJS failed:', msg || e);
+                }
+            }
+            return false;
+        }
+
+        let selectedResponse = null;
+
+        document.querySelectorAll('.response-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.response-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedResponse = this.dataset.response;
+                document.getElementById('submitBtn').disabled = false;
+            });
+        });
+
+        const SENDING_MESSAGES_YES = [
+            'Sealing your reply with love...',
+            'Adding a little magic...',
+            'Sending it through the stars...',
+            'Wrapping it in rose petals...',
+            'Almost there, my love...',
+            'Your words are on their way...',
+            'One moment of anticipation...',
+            'Delivering your yes across the universe...'
+        ];
+
+        const SENDING_MESSAGES_MAYBE = [
+            'Noting down your thoughts...',
+            'No rush—take your time...',
+            'Checking the calendar with you...',
+            'Keeping a little hope in my heart...',
+            'Whenever you\'re ready, I\'ll be here...',
+            'Sending your maybe into the world...',
+            'I\'ll be waiting with a smile...',
+            'Your reply is in good hands...'
+        ];
+
+        const MESSAGE_REVEAL_YES = {
+            icon: '💝',
+            title: 'A Message From My Heart',
+            text: 'Every moment with you is a treasure I hold close to my heart. This Valentine\'s week isn\'t just about grand gestures—it\'s about celebrating the little things that make us, us. The quiet mornings, the shared laughter, the way you look at me when you think I\'m not watching. You are my forever Valentine, my best friend, my home. I can\'t wait to create more beautiful memories with you, starting with this week of love. Thank you for saying yes—not just to this invitation, but to a lifetime of adventures together. I love you more than words can express, and I promise to show you every single day. Here\'s to us, my love. Forever and always.'
+        };
+
+        const MESSAGE_REVEAL_MAYBE = {
+            icon: '😏',
+            title: 'Plot Twist',
+            text: 'A lot of things are already planned… and you don\'t have a choice anyway, because you\'re my spouse. :P So you\'re in! But if you\'ve changed your mind and want to say yes properly, go ahead—I\'ll take it.'
+        };
+
+        document.getElementById('submitBtn').addEventListener('click', async function() {
+            if (!selectedResponse) return;
+
+            const btn = this;
+            const form = document.getElementById('rsvpForm');
+            const formGroups = form.querySelectorAll('.form-group');
+            const sendingEl = document.getElementById('rsvpSending');
+            const sendingMsgEl = document.getElementById('sendingMessage');
+
+            const sendingMessages = selectedResponse === 'yes' ? SENDING_MESSAGES_YES : SENDING_MESSAGES_MAYBE;
+
+            btn.classList.add('loading');
+            btn.disabled = true;
+            formGroups.forEach(el => { el.style.display = 'none'; });
+            btn.style.display = 'none';
+            sendingEl.classList.add('active');
+            sendingMsgEl.textContent = sendingMessages[0];
+
+            let msgIndex = 0;
+            const messageInterval = setInterval(() => {
+                msgIndex = (msgIndex + 1) % sendingMessages.length;
+                sendingMsgEl.style.opacity = '0';
+                setTimeout(() => {
+                    sendingMsgEl.textContent = sendingMessages[msgIndex];
+                    sendingMsgEl.style.opacity = '1';
+                }, 300);
+            }, 2200);
+
+            const responseLabel = selectedResponse === 'yes' ? 'Absolutely Yes!' : 'Let Me Check';
+            const specialRequests = document.getElementById('specialRequests').value.trim();
+
+            var emailSent = await sendRsvpEmail('Valentine\'s RSVP: ' + responseLabel, responseLabel, specialRequests);
+
+            clearInterval(messageInterval);
+            sendingMsgEl.textContent = selectedResponse === 'yes' ? 'Sent with love! 💕' : 'Got it—thank you! 💛';
+            if (!emailSent) {
+                sendingMsgEl.innerHTML = sendingMsgEl.textContent + ' <span style="font-size:0.85em;opacity:0.9;">(Email could not be sent—tell them directly.)</span>';
+            }
+            sendingMsgEl.style.transition = 'opacity 0.3s ease';
+
+            const reveal = selectedResponse === 'yes' ? MESSAGE_REVEAL_YES : MESSAGE_REVEAL_MAYBE;
+            const actionsEl = document.getElementById('messageRevealActions');
+            document.getElementById('messageRevealIcon').textContent = reveal.icon;
+            document.getElementById('messageRevealTitle').textContent = reveal.title;
+            document.getElementById('messageRevealText').textContent = reveal.text;
+            actionsEl.innerHTML = '';
+
+            if (selectedResponse === 'yes') {
+                document.body.classList.remove('rsvp-pending');
+                document.body.classList.add('already-said-yes');
+                localStorage.setItem('valentine2026RSVP', 'yes');
+            } else {
+                const changedMindBtn = document.createElement('button');
+                changedMindBtn.type = 'button';
+                changedMindBtn.className = 'changed-mind-btn';
+                changedMindBtn.textContent = "I've changed my mind — I say Absolutely Yes! 💕";
+                changedMindBtn.addEventListener('click', async function() {
+                    changedMindBtn.disabled = true;
+                    changedMindBtn.textContent = 'Sending...';
+                    localStorage.setItem('valentine2026RSVP', 'yes');
+                    await sendRsvpEmail('Changed my mind — Absolutely Yes! 💕', 'Absolutely Yes!', '(Changed mind from Let Me Check)');
+                    document.body.classList.remove('rsvp-pending');
+                    document.body.classList.add('already-said-yes');
+                    window.location.reload();
+                });
+                actionsEl.appendChild(changedMindBtn);
+            }
+
+            setTimeout(() => {
+                const rsvpSection = document.querySelector('.rsvp-section');
+                rsvpSection.style.transition = 'opacity 0.5s ease';
+                rsvpSection.style.opacity = '0';
+
+                setTimeout(() => {
+                    rsvpSection.style.display = 'none';
+                    const messageReveal = document.getElementById('messageReveal');
+                    messageReveal.classList.add('show');
+                    messageReveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 500);
+            }, 1200);
+        });
+
+        // Sidebar Toggle for Mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (window.innerWidth <= 768 && 
+                !sidebar.contains(e.target) && 
+                !menuToggle.contains(e.target) && 
+                sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Initialize
+        createHearts();
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>

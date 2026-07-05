@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Jayan Vinod — Senior Backend Engineer (Python) building distributed systems that process 30K+ orders/day. Platform engineering, logistics technology, and AI-enabled backend systems at production scale." />
+  <meta name="keywords" content="Senior Backend Engineer, Python Engineer, Distributed Systems, Platform Engineering, AI Systems, Logistics Technology, Backend Platforms" />
+  <meta name="author" content="Jayan Vinod" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Jayan Vinod — Senior Backend Engineer | Distributed Systems at Scale" />
+  <meta property="og:description" content="Senior Backend Engineer building distributed systems that process 30K+ orders daily across logistics, transportation, and AI-assisted operations." />
+  <meta property="og:image" content="profile.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <title>Jayan Vinod — Senior Backend Engineer | Distributed Systems & Platform Engineering</title>
+  <style>
+    :root {
+      --bg: #0A0A0B;
+      --bg-2: #0E0E10;
+      --card: #161618;
+      --card-2: #1B1B1E;
+      --text: #ECECEE;
+      --muted: #8A8A92;
+      --border: rgba(255, 255, 255, 0.06);
+      --border-strong: rgba(255, 255, 255, 0.11);
+      --accent: #F97316;
+      --accent-2: #FB923C;
+      --accent-3: #A1A8B5;
+      --accent-soft: rgba(249, 115, 22, 0.12);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --maxw: 1180px;
+      /* matte recessed look: whisper-faint top edge + soft diffuse inner shadow + soft outer drop */
+      --inset: inset 0 1px 0 rgba(255, 255, 255, 0.022), inset 0 -24px 48px -26px rgba(0, 0, 0, 0.55);
+      --inset-hover: inset 0 1px 0 rgba(255, 255, 255, 0.035), inset 0 -28px 56px -26px rgba(0, 0, 0, 0.6);
+      --shadow: 0 30px 70px -34px rgba(0, 0, 0, 0.85);
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --serif: ui-serif, Georgia, "Times New Roman", serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Background pattern */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.028) 1px, transparent 0);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+
+    /* Matte grain overlay — sits above everything, gives surfaces a fine velvety texture */
+    html::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.045;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: -12%;
+      right: -8%;
+      width: 50vw;
+      height: 50vw;
+      max-width: 680px;
+      max-height: 680px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.06), transparent 62%);
+      filter: blur(50px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .wrap {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============ NAV ============ */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      background: rgba(10, 10, 11, 0.72);
+      border-bottom: 1px solid var(--border);
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .logo .mark {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: grid; place-items: center;
+      background: linear-gradient(160deg, #26262a, #141416);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--inset);
+      font-size: 14px; font-weight: 800;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+    }
+    .nav-links a {
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      color: var(--muted);
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      background: var(--text);
+      color: #0A0A0B;
+      font-weight: 600;
+      font-size: 14px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 24px -12px rgba(255, 255, 255, 0.35); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .hamburger span {
+      width: 20px; height: 2px;
+      background: var(--text);
+      transition: 0.3s;
+    }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+    }
+    .btn-primary { background: var(--text); color: #0A0A0B; border-color: var(--text); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(255, 255, 255, 0.35); }
+    .btn-ghost { background: var(--card); color: var(--text); box-shadow: var(--inset); }
+    .btn-ghost:hover { transform: translateY(-2px); border-color: var(--border-strong); box-shadow: var(--inset-hover); }
+
+    /* ============ SECTION HEAD ============ */
+    section { padding: 90px 0; position: relative; z-index: 1; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .eyebrow::before {
+      content: ""; width: 22px; height: 1px; background: var(--accent-2);
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .section-sub { color: var(--muted); max-width: 640px; font-size: 16px; }
+    .section-head { margin-bottom: 48px; }
+
+    /* ============ HERO ============ */
+    .hero { padding-top: 70px; padding-bottom: 60px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--inset);
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .badge .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #34D399;
+      box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+    }
+    .hero h1 {
+      font-size: clamp(34px, 5.2vw, 60px);
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .hero h1 .accent {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 500;
+      background: linear-gradient(120deg, var(--accent-2), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p.lead {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 540px;
+      margin-bottom: 34px;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 420px;
+    }
+    .visual-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 72%);
+      -webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 72%);
+      border-radius: 50%;
+    }
+    .avatar {
+      width: 230px; height: 230px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      background:
+        radial-gradient(circle at 32% 26%, rgba(249, 115, 22, 0.18), transparent 60%),
+        linear-gradient(160deg, #1d1d20, #101012);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.02), inset 0 2px 1px rgba(255, 255, 255, 0.06), inset 0 -22px 40px -16px rgba(0, 0, 0, 0.8), var(--shadow);
+      position: relative;
+      z-index: 2;
+    }
+    .avatar span {
+      font-size: 78px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(160deg, #f2f2f4, #9a9aa2);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .float-badge {
+      position: absolute;
+      z-index: 3;
+      background: rgba(22, 22, 24, 0.94);
+      border: 1px solid var(--border-strong);
+      padding: 9px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      backdrop-filter: blur(6px);
+      box-shadow: var(--inset), var(--shadow);
+      white-space: nowrap;
+      animation: floaty 6s ease-in-out infinite;
+    }
+    .float-badge small { color: var(--accent-2); display: block; font-size: 11px; font-weight: 500; }
+    .fb1 { top: 6%; left: -6%; animation-delay: 0s; }
+    .fb2 { top: 0%; right: -2%; animation-delay: 0.8s; }
+    .fb3 { top: 44%; left: -14%; animation-delay: 1.6s; }
+    .fb4 { top: 40%; right: -12%; animation-delay: 2.4s; }
+    .fb5 { bottom: 6%; left: 2%; animation-delay: 3.2s; }
+    .fb6 { bottom: 0%; right: 4%; animation-delay: 4s; }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-9px); }
+    }
+
+    /* ============ WORKED AT ============ */
+    .worked {
+      padding: 36px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .worked-inner {
+      display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+    }
+    .worked-label { color: var(--muted); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
+    .worked-company {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 22px; font-weight: 700; letter-spacing: -0.5px;
+    }
+    .worked-company .pin {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: linear-gradient(160deg, #26262a, #141416);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--inset);
+      display: grid; place-items: center; font-size: 13px; font-weight: 800; color: var(--text);
+    }
+
+    /* ============ METRIC CARDS ============ */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .metric {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 22px;
+      box-shadow: var(--inset);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      opacity: 0;
+    }
+    .metric.in { opacity: 1; }
+    .metric:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+      box-shadow: var(--inset-hover), var(--shadow);
+    }
+    .metric .num {
+      font-size: 30px; font-weight: 800; letter-spacing: -1px;
+      background: linear-gradient(160deg, #f4f4f6, #9a9aa2);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .metric .lbl { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+    /* ============ EXPERTISE ============ */
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .expertise-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--inset);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .expertise-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+      box-shadow: var(--inset-hover), var(--shadow);
+    }
+    .expertise-card .ic {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: grid; place-items: center; font-size: 22px;
+      background: var(--accent-soft); border: 1px solid rgba(249, 115, 22, 0.28);
+      box-shadow: var(--inset);
+      margin-bottom: 18px;
+    }
+    .expertise-card h3 { font-size: 20px; margin-bottom: 10px; }
+    .expertise-card p { color: var(--muted); font-size: 15px; }
+
+    /* ============ PROJECTS ============ */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--inset);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+      box-shadow: var(--inset-hover), var(--shadow);
+    }
+    .project-card h3 { font-size: 19px; margin-bottom: 12px; letter-spacing: -0.4px; }
+    .pc-block { margin-bottom: 16px; }
+    .pc-head {
+      font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--accent-2); font-weight: 700; margin-bottom: 6px;
+    }
+    .pc-block p { color: var(--muted); font-size: 14px; }
+    .pc-block ul { list-style: none; }
+    .pc-block li {
+      color: var(--muted); font-size: 14px; padding-left: 18px; position: relative; margin-bottom: 4px;
+    }
+    .pc-block li::before {
+      content: "›"; position: absolute; left: 0; color: var(--accent-2); font-weight: 800;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      font-size: 12px; padding: 4px 10px; border-radius: 999px;
+      background: var(--card-2); border: 1px solid var(--border); color: var(--text);
+      box-shadow: var(--inset);
+    }
+    .pc-foot { margin-top: auto; padding-top: 18px; }
+    .deep-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 14px; font-weight: 600; color: var(--accent-2);
+      cursor: pointer; background: none; border: none; transition: gap 0.2s;
+    }
+    .deep-link:hover { gap: 11px; }
+
+    /* ============ ARCHITECTURE ACCORDION ============ */
+    .accordion { display: flex; flex-direction: column; gap: 14px; }
+    .acc-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--inset);
+      overflow: hidden;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .acc-item.open { border-color: rgba(249, 115, 22, 0.35); box-shadow: var(--inset-hover); }
+    .acc-head {
+      width: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+      padding: 22px 26px;
+      background: none; border: none; cursor: pointer;
+      color: var(--text); text-align: left;
+      font-size: 18px; font-weight: 600;
+    }
+    .acc-head .acc-icon {
+      width: 30px; height: 30px; flex: none; border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      display: grid; place-items: center; font-size: 18px;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .acc-item.open .acc-icon { transform: rotate(45deg); background: var(--card-2); border-color: var(--accent); color: var(--accent-2); }
+    .acc-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .acc-inner { padding: 0 26px 26px; }
+    .flow {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+      margin-bottom: 20px;
+    }
+    .flow-node {
+      padding: 9px 14px; border-radius: 10px;
+      background: var(--card-2); border: 1px solid var(--border-strong);
+      box-shadow: var(--inset);
+      font-size: 13px; font-weight: 600; white-space: nowrap;
+    }
+    .flow-arrow { color: var(--accent-2); font-size: 18px; font-weight: 800; }
+    .acc-inner p.acc-lead { color: var(--muted); font-size: 15px; margin-bottom: 18px; max-width: 760px; }
+    .acc-inner h4 {
+      font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--accent-2); font-weight: 700; margin: 18px 0 8px;
+    }
+    .acc-inner ul { list-style: none; }
+    .acc-inner li {
+      color: var(--muted); font-size: 15px; padding-left: 20px; position: relative; margin-bottom: 7px;
+    }
+    .acc-inner li::before {
+      content: "▸"; position: absolute; left: 0; color: var(--accent-3);
+    }
+
+    /* ============ NOTES ============ */
+    .notes-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    }
+    .note-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 26px;
+      box-shadow: var(--inset);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      position: relative;
+    }
+    .note-card:hover { transform: translateY(-4px); border-color: var(--border-strong); box-shadow: var(--inset-hover), var(--shadow); }
+    .note-card h3 { font-size: 19px; margin-bottom: 10px; padding-right: 90px; letter-spacing: -0.4px; }
+    .note-card p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+    .soon {
+      position: absolute; top: 22px; right: 26px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      padding: 4px 10px; border-radius: 999px;
+      background: var(--accent-soft); color: var(--accent-2);
+      border: 1px solid rgba(249, 115, 22, 0.28);
+    }
+
+    /* ============ RESUME ============ */
+    .resume-box, .contact-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--inset);
+      padding: 44px;
+    }
+    .resume-box p.profile { color: var(--muted); font-size: 17px; max-width: 760px; margin-bottom: 28px; }
+    .resume-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* ============ CONTACT ============ */
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+    }
+    .contact-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+    .contact-list li { display: flex; gap: 12px; align-items: flex-start; }
+    .contact-list .ck { color: var(--accent-2); font-weight: 600; min-width: 90px; font-size: 14px; }
+    .contact-list .cv { color: var(--text); font-size: 15px; }
+    .contact-list .cv a:hover { color: var(--accent-2); }
+    .roles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .role-chip {
+      font-size: 13px; padding: 6px 12px; border-radius: 999px;
+      background: var(--card-2); border: 1px solid var(--border);
+      box-shadow: var(--inset);
+    }
+    .relocate {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 22px; padding: 10px 16px; border-radius: 999px;
+      background: var(--card-2); border: 1px solid var(--border-strong);
+      box-shadow: var(--inset);
+      font-size: 14px; font-weight: 600;
+    }
+
+    /* ============ FOOTER ============ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    footer .flogo { font-weight: 700; color: var(--text); }
+
+    /* ============ PROFILE PHOTO ============ */
+    .avatar.photo { overflow: hidden; padding: 0; background: linear-gradient(160deg, #1d1d20, #101012); }
+    .avatar.photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    /* initials fallback layer sits behind the image; if image fails to load it shows through */
+    .avatar .initials {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      font-size: 78px; font-weight: 800; letter-spacing: 2px;
+      background: linear-gradient(160deg, #f2f2f4, #9a9aa2);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      z-index: 1;
+    }
+    .avatar .initials + img { position: relative; z-index: 2; }
+
+    /* ============ ABOUT ============ */
+    .about-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+    .about-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--inset);
+      padding: 40px 44px;
+    }
+    .about-box p { color: var(--muted); font-size: 16.5px; max-width: 820px; margin-bottom: 16px; }
+    .about-box p:last-child { margin-bottom: 0; }
+    .about-box p strong { color: var(--text); font-weight: 600; }
+
+    /* ============ FEATURED ACHIEVEMENTS ============ */
+    .ach-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .ach-card {
+      position: relative;
+      background:
+        radial-gradient(circle at 14% 12%, rgba(249, 115, 22, 0.10), transparent 55%),
+        var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px 32px;
+      box-shadow: var(--inset);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      overflow: hidden;
+    }
+    .ach-card:hover { transform: translateY(-4px); border-color: rgba(249, 115, 22, 0.35); box-shadow: var(--inset-hover), var(--shadow); }
+    .ach-card .ach-ic {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: grid; place-items: center; font-size: 20px;
+      background: var(--accent-soft); border: 1px solid rgba(249, 115, 22, 0.28);
+      box-shadow: var(--inset); margin-bottom: 18px;
+    }
+    .ach-card .ach-metric {
+      font-size: clamp(26px, 3.4vw, 34px); font-weight: 800; letter-spacing: -1px; line-height: 1.1;
+      background: linear-gradient(160deg, #f4f4f6, #c8c8cf);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .ach-card .ach-metric .arrow { color: var(--accent-2); -webkit-text-fill-color: var(--accent-2); font-weight: 700; }
+    .ach-card .ach-desc { color: var(--muted); font-size: 14.5px; margin-top: 10px; }
+
+    /* ============ EXPERIENCE TIMELINE ============ */
+    .timeline { position: relative; }
+    .exp-company {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+    }
+    .exp-company .pin {
+      width: 46px; height: 46px; border-radius: 12px;
+      background: linear-gradient(160deg, #26262a, #141416);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--inset);
+      display: grid; place-items: center; font-size: 15px; font-weight: 800; color: var(--text);
+    }
+    .exp-company h3 { font-size: 24px; letter-spacing: -0.5px; }
+    .exp-company .exp-meta { color: var(--muted); font-size: 14px; }
+    .exp-track { position: relative; padding-left: 30px; }
+    .exp-track::before {
+      content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px;
+      width: 1px; background: linear-gradient(var(--border-strong), var(--border));
+    }
+    .exp-item { position: relative; margin-bottom: 22px; }
+    .exp-item:last-child { margin-bottom: 0; }
+    .exp-item::before {
+      content: ""; position: absolute; left: -30px; top: 6px;
+      width: 15px; height: 15px; border-radius: 50%;
+      background: var(--card-2); border: 1px solid var(--accent);
+      box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.08);
+    }
+    .exp-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 26px;
+      box-shadow: var(--inset);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .exp-card:hover { transform: translateY(-3px); border-color: var(--border-strong); box-shadow: var(--inset-hover), var(--shadow); }
+    .exp-card .exp-role { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+    .exp-card .exp-dates {
+      font-size: 12px; letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--accent-2); font-weight: 700; margin: 4px 0 14px;
+    }
+    .exp-card ul { list-style: none; }
+    .exp-card li {
+      color: var(--muted); font-size: 14.5px; padding-left: 18px; position: relative; margin-bottom: 6px;
+    }
+    .exp-card li:last-child { margin-bottom: 0; }
+    .exp-card li::before { content: "›"; position: absolute; left: 0; color: var(--accent-2); font-weight: 800; }
+
+    /* ============ PROJECT GROUP HEADERS ============ */
+    .group-head {
+      display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+      margin: 52px 0 22px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .group-head:first-of-type { margin-top: 0; }
+    .group-head .gh-title {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.4px; color: var(--text);
+    }
+    .group-head .gh-tag {
+      font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; font-weight: 700;
+      padding: 4px 11px; border-radius: 999px;
+    }
+    .gh-tag.product { background: var(--accent-soft); color: var(--accent-2); border: 1px solid rgba(249, 115, 22, 0.28); }
+    .gh-tag.eng { background: var(--card-2); color: var(--accent-3); border: 1px solid var(--border-strong); }
+    .group-head .gh-sub { color: var(--muted); font-size: 14px; flex-basis: 100%; }
+    /* engineering highlights cards get a subtler treatment to differentiate from products */
+    .project-grid.eng .project-card { background: var(--bg-2); }
+
+    .pc-results {
+      margin-top: 4px; padding: 10px 12px; border-radius: var(--radius-sm);
+      background: var(--accent-soft); border: 1px solid rgba(249, 115, 22, 0.20);
+    }
+    .pc-results .pc-head { color: var(--accent-2); margin-bottom: 4px; }
+    .pc-results p, .pc-results li { color: var(--text); }
+
+    /* ============ NOTES TAG (replaces coming soon) ============ */
+    .note-tag {
+      position: absolute; top: 22px; right: 26px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      padding: 4px 10px; border-radius: 999px;
+    }
+    .note-tag.draft { background: var(--accent-soft); color: var(--accent-2); border: 1px solid rgba(249, 115, 22, 0.28); }
+    .note-tag.note { background: var(--card-2); color: var(--accent-3); border: 1px solid var(--border-strong); }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 920px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 70px; }
+      .hero-visual { order: -1; }
+      .metric-grid { grid-template-columns: repeat(2, 1fr); }
+      .cards-3, .project-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .nav-links, .nav-cta.desktop { display: none; }
+      .hamburger { display: flex; }
+      .nav-links.mobile-open {
+        display: flex;
+        position: absolute;
+        top: 70px; left: 0; right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        padding: 16px 24px 24px;
+        background: rgba(10, 10, 11, 0.98);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(14px);
+      }
+      .nav-links.mobile-open a { padding: 12px 14px; font-size: 16px; }
+      .nav-links.mobile-open .mobile-cta {
+        margin-top: 8px; text-align: center; background: var(--text); color: #0A0A0B; font-weight: 600;
+      }
+      section { padding: 64px 0; }
+      .metric-grid, .cards-3, .project-grid, .notes-grid, .contact-grid, .ach-grid {
+        grid-template-columns: 1fr;
+      }
+      .resume-box, .contact-box, .about-box { padding: 30px 24px; }
+      .hero-visual { min-height: 380px; }
+      .float-badge { font-size: 12px; padding: 7px 11px; }
+      .fb1 { left: 0; } .fb3 { left: -2%; } .fb5 { left: 0; }
+      .fb2 { right: 0; } .fb4 { right: -2%; } .fb6 { right: 0; }
+    }
+
+    @media (max-width: 420px) {
+      .avatar { width: 180px; height: 180px; }
+      .avatar span { font-size: 60px; }
+      .float-badge small { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <header>
+    <div class="wrap">
+      <nav aria-label="Primary">
+        <a class="logo" href="#top" aria-label="Jayan Vinod home">
+          <span class="mark">JV</span>
+          <span>Jayan Vinod</span>
+        </a>
+        <div class="nav-right">
+          <ul class="nav-links" id="navLinks">
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#resume">Resume</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a class="nav-cta mobile-cta" href="#contact">Reach out</a></li>
+          </ul>
+          <a class="nav-cta desktop" href="#contact">Reach out →</a>
+          <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero wrap" aria-label="Introduction">
+      <div class="hero-grid">
+        <div class="hero-text">
+          <span class="badge"><span class="dot"></span> Senior Backend Engineer @ ElasticRun</span>
+          <h1>Senior Backend Engineer building <span class="accent">distributed systems</span> that process 30K+ orders every day.</h1>
+          <p class="lead">Five years building production backend platforms for logistics, transportation, and AI-assisted operations — designing for real-time scale, reliability, and cost. I own systems end to end, from APIs and event pipelines to databases and production debugging.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#projects">View Projects</a>
+            <a class="btn btn-ghost" href="resume.pdf" download>Download Resume ↓</a>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-pattern"></div>
+          <div class="avatar photo">
+            <span class="initials">JV</span>
+            <img src="profile.png" alt="Jayan Vinod" onerror="this.style.display='none'" />
+          </div>
+          <div class="float-badge fb1"><small>Throughput</small>30K+ orders/day</div>
+          <div class="float-badge fb2"><small>Transactions</small>15K+ /day</div>
+          <div class="float-badge fb3"><small>Tracking</small>24K+ trips</div>
+          <div class="float-badge fb4"><small>Efficiency</small>70% infra reduction</div>
+          <div class="float-badge fb5"><small>Optimization</small>2M jobs removed/day</div>
+          <div class="float-badge fb6"><small>AI</small>RAG + AI systems</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section id="about" aria-labelledby="about-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">About</span>
+          <h2 class="section-title" id="about-title">A bit about me</h2>
+        </div>
+        <div class="about-box">
+          <p>I started my career at <strong>ElasticRun in 2021</strong>, straight into backend work on systems that were already running real operations. Since then I've spent five years building the platforms behind logistics, transportation, ERP, and day-to-day operations — the kind of systems where a slow query or a stuck queue shows up as orders not moving.</p>
+          <p>Most of my work sits in the backend: designing and shipping APIs, untangling distributed systems, tuning databases, and doing the unglamorous part — debugging things in production when they break. I like getting close to how a system actually behaves under load rather than how it's supposed to behave on paper, and a lot of my better wins have come from that.</p>
+          <p>Lately I've been focused on <strong>AI-assisted systems and operational intelligence</strong> — using retrieval and LLMs to make incident investigation and operations faster, while keeping the engineering grounded in real signals. I'm now looking for backend and backend-plus-AI roles where I can own platforms end to end.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURED ACHIEVEMENTS ============ -->
+    <section id="achievements" aria-labelledby="ach-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Proof Points</span>
+          <h2 class="section-title" id="ach-title">Results that moved the needle</h2>
+          <p class="section-sub">A few production wins where the numbers speak for themselves.</p>
+        </div>
+        <div class="ach-grid">
+          <div class="ach-card">
+            <div class="ach-ic">🔻</div>
+            <div class="ach-metric">95% <span class="arrow">→</span> 50% CPU</div>
+            <div class="ach-desc">Cut CPU utilization from 95% on 16 cores down to 50% on just 4 cores — a major reduction in the compute footprint.</div>
+          </div>
+          <div class="ach-card">
+            <div class="ach-ic">🧹</div>
+            <div class="ach-metric">2M+ jobs/day removed</div>
+            <div class="ach-desc">Eliminated more than 2 million background jobs per day by rethinking a job-heavy pipeline, without losing reliability.</div>
+          </div>
+          <div class="ach-card">
+            <div class="ach-ic">⚡</div>
+            <div class="ach-metric">70ms <span class="arrow">→</span> 10–20ms DB</div>
+            <div class="ach-desc">Brought database latency down from ~70ms to a steady 10–20ms through query tuning, indexing, and access-pattern fixes.</div>
+          </div>
+          <div class="ach-card">
+            <div class="ach-ic">🚀</div>
+            <div class="ach-metric">200ms <span class="arrow">→</span> 50ms API</div>
+            <div class="ach-desc">Improved API latency from 200ms to 50ms, making operational dashboards and workflows noticeably snappier.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WORKED AT ============ -->
+    <div class="worked">
+      <div class="wrap worked-inner">
+        <span class="worked-label">Working at</span>
+        <span class="worked-company"><span class="pin">ER</span> ElasticRun</span>
+      </div>
+    </div>
+
+    <!-- ============ IMPACT ============ -->
+    <section id="impact" aria-labelledby="impact-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Engineering Impact</span>
+          <h2 class="section-title" id="impact-title">Measured results in production</h2>
+          <p class="section-sub">High-volume logistics workloads, optimized for scale, reliability, and cost.</p>
+        </div>
+        <div class="metric-grid">
+          <div class="metric"><div class="num">30K+</div><div class="lbl">Orders / Day</div></div>
+          <div class="metric"><div class="num">15K+</div><div class="lbl">Transactions / Day</div></div>
+          <div class="metric"><div class="num">24K+</div><div class="lbl">Tracked Trips</div></div>
+          <div class="metric"><div class="num">256GB</div><div class="lbl">Production MySQL DB</div></div>
+          <div class="metric"><div class="num">70%</div><div class="lbl">Infrastructure Reduction</div></div>
+          <div class="metric"><div class="num">2M+</div><div class="lbl">Background Jobs Removed / Day</div></div>
+          <div class="metric"><div class="num">95% → 50%</div><div class="lbl">CPU Reduction</div></div>
+          <div class="metric"><div class="num">200ms → 50ms</div><div class="lbl">API Latency</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EXPERIENCE ============ -->
+    <section id="experience" aria-labelledby="experience-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Experience</span>
+          <h2 class="section-title" id="experience-title">Where I've worked</h2>
+          <p class="section-sub">Five years at ElasticRun, growing from engineer to senior across the core backend platforms.</p>
+        </div>
+        <div class="timeline">
+          <div class="exp-company">
+            <span class="pin">ER</span>
+            <div>
+              <h3>ElasticRun</h3>
+              <div class="exp-meta">Pune, India · Jan 2021 – Present</div>
+            </div>
+          </div>
+          <div class="exp-track">
+            <div class="exp-item">
+              <div class="exp-card">
+                <div class="exp-role">Senior Engineer</div>
+                <div class="exp-dates">May 2024 – Present</div>
+                <ul>
+                  <li>Own backend services across logistics and transportation platforms handling 30K+ orders/day</li>
+                  <li>Led performance optimization initiatives — CPU from 95% on 16 cores to 50% on 4 cores, API latency 200ms → 50ms</li>
+                  <li>Drive platform and architecture work: event-driven workflows, service boundaries, and database tuning</li>
+                  <li>Built AI-assisted operational tooling (RAG-based incident investigation) on top of production signals</li>
+                  <li>Investigate and resolve production incidents across high-volume operational workflows</li>
+                </ul>
+              </div>
+            </div>
+            <div class="exp-item">
+              <div class="exp-card">
+                <div class="exp-role">Engineer</div>
+                <div class="exp-dates">Jan 2021 – Apr 2024</div>
+                <ul>
+                  <li>Built backend systems for logistics, transportation, ERP, and internal operations</li>
+                  <li>Developed REST APIs, Kafka event pipelines, and async processing for order and shipment workflows</li>
+                  <li>Optimized a 256GB production MySQL database and reduced infrastructure load by ~70%</li>
+                  <li>Removed 2M+ background jobs/day by redesigning a job-heavy pipeline</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EXPERTISE ============ -->
+    <section id="expertise" aria-labelledby="expertise-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Core Expertise</span>
+          <h2 class="section-title" id="expertise-title">What I work with</h2>
+        </div>
+        <div class="cards-3">
+          <div class="expertise-card">
+            <div class="ic">⚙️</div>
+            <h3>Backend Systems</h3>
+            <p>Python, Go, Django, FastAPI, REST APIs, Microservices, Async Processing</p>
+          </div>
+          <div class="expertise-card">
+            <div class="ic">🔗</div>
+            <h3>Distributed Platforms</h3>
+            <p>Kafka, Redis, Event-Driven Architecture, Caching, Rate Limiting, Database Optimization, Observability</p>
+          </div>
+          <div class="expertise-card">
+            <div class="ic">🧠</div>
+            <h3>AI-Enabled Systems</h3>
+            <p>RAG, Vector Search, Qdrant, Embeddings, LLM Integrations, LangChain, LangGraph, Tool Calling</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROJECTS ============ -->
+    <section id="projects" aria-labelledby="projects-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Selected Work</span>
+          <h2 class="section-title" id="projects-title">Projects</h2>
+          <p class="section-sub">Core product platforms that run the business, plus the engineering initiatives that keep them fast and reliable.</p>
+        </div>
+
+        <div class="group-head">
+          <span class="gh-title">Core Product Platforms</span>
+          <span class="gh-tag product">Products</span>
+          <span class="gh-sub">End-to-end backend platforms that operations runs on every day.</span>
+        </div>
+        <div class="project-grid">
+
+          <article class="project-card">
+            <h3>Logistics Management System</h3>
+            <div class="pc-block">
+              <div class="pc-head">Problem</div>
+              <p>Operations needed a single backend to run the full order lifecycle — from order creation through hub operations, rider assignment, and delivery — at high daily volume.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Scale</div>
+              <p>30K+ orders/day · ~30K Kafka events/day · 256GB production MySQL.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Architecture</div>
+              <p>A modular 10-service backend with Kafka coordinating shipment and assignment events, Redis caching hot paths, and REST APIs feeding operational dashboards.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Key Challenges</div>
+              <ul>
+                <li>Keeping order state consistent across services under load</li>
+                <li>Tuning a large MySQL database without downtime</li>
+              </ul>
+            </div>
+            <div class="pc-block pc-results">
+              <div class="pc-head">Results</div>
+              <p>Stable 30K+ orders/day throughput with a leaner, optimized data layer.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Tech</div>
+              <div class="chips">
+                <span class="chip">Python</span><span class="chip">Kafka</span><span class="chip">MySQL</span>
+                <span class="chip">Redis</span><span class="chip">REST APIs</span><span class="chip">Docker</span>
+              </div>
+            </div>
+            <div class="pc-foot"><button class="deep-link" data-target="dd-lms">View Deep Dive →</button></div>
+          </article>
+
+          <article class="project-card">
+            <h3>Transportation Management System</h3>
+            <div class="pc-block">
+              <div class="pc-head">Problem</div>
+              <p>Trip execution, shipment movement, and vehicle tracking were spread across slow workflows that struggled to keep dashboards real-time.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Scale</div>
+              <p>15K+ transactions/day · 24K tracked trips.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Architecture</div>
+              <p>Event-driven services with Kafka workers for async processing, MongoDB and PostgreSQL/TimescaleDB for live and historical data, and caching to take pressure off the database.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Key Challenges</div>
+              <ul>
+                <li>A CPU-bound bottleneck capping throughput</li>
+                <li>High API latency on operational dashboards</li>
+              </ul>
+            </div>
+            <div class="pc-block pc-results">
+              <div class="pc-head">Results</div>
+              <p>CPU dropped from 95% on 16 cores to 50% on 4 cores; API latency improved from 200ms to 50ms.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Tech</div>
+              <div class="chips">
+                <span class="chip">Python</span><span class="chip">Go</span><span class="chip">Kafka</span>
+                <span class="chip">MongoDB</span><span class="chip">PostgreSQL</span><span class="chip">TimescaleDB</span><span class="chip">Redis</span>
+              </div>
+            </div>
+            <div class="pc-foot"><button class="deep-link" data-target="dd-tms">View Deep Dive →</button></div>
+          </article>
+
+          <article class="project-card">
+            <h3>ERP & Supplier Platform</h3>
+            <div class="pc-block">
+              <div class="pc-head">Problem</div>
+              <p>Finance, procurement, and supplier operations needed reliable backend modules that multiple internal teams could depend on day to day.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Architecture</div>
+              <p>A set of backend modules over MySQL with REST APIs, Redis caching, and CI/CD pipelines for safe, frequent releases across teams.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Key Challenges</div>
+              <ul>
+                <li>Supporting varied finance and procurement workflows on shared services</li>
+                <li>Keeping internal modules stable as requirements changed</li>
+              </ul>
+            </div>
+            <div class="pc-block pc-results">
+              <div class="pc-head">Results</div>
+              <p>Dependable backend modules powering finance, procurement, and supplier operations for multiple teams.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Tech</div>
+              <div class="chips">
+                <span class="chip">Python</span><span class="chip">MySQL</span><span class="chip">Redis</span>
+                <span class="chip">REST APIs</span><span class="chip">CI/CD</span>
+              </div>
+            </div>
+            <div class="pc-foot"><button class="deep-link" data-target="architecture">View Deep Dive →</button></div>
+          </article>
+        </div>
+
+        <div class="group-head">
+          <span class="gh-title">Engineering Highlights</span>
+          <span class="gh-tag eng">Platform Capabilities</span>
+          <span class="gh-sub">Cross-cutting initiatives and capabilities shared across the product platforms.</span>
+        </div>
+        <div class="project-grid eng">
+
+          <article class="project-card">
+            <h3>Location Tracking Platform</h3>
+            <div class="pc-block">
+              <div class="pc-head">Problem</div>
+              <p>Logistics and transportation both needed accurate live and historical location data for riders and trips.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Highlights</div>
+              <ul>
+                <li>Flutter rider app feeding a Go tracking service</li>
+                <li>MongoDB geospatial storage for live positions</li>
+                <li>TimescaleDB/PostGIS for historical trip reconstruction</li>
+                <li>Live dashboards and assignment workflows</li>
+              </ul>
+            </div>
+            <div class="pc-foot"><button class="deep-link" data-target="dd-loc">View Deep Dive →</button></div>
+          </article>
+
+          <article class="project-card">
+            <h3>Facility Availability Engine</h3>
+            <div class="pc-block">
+              <div class="pc-head">Problem</div>
+              <p>Operational planning relied on manual decisions about which facilities were available for assignment.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Highlights</div>
+              <ul>
+                <li>Rule-driven availability strategy logic</li>
+                <li>Metric-based assignment decisions</li>
+                <li>Auto-assignment support</li>
+                <li>Reduced manual planning effort</li>
+              </ul>
+            </div>
+            <div class="pc-foot"><button class="deep-link" data-target="architecture">View Deep Dive →</button></div>
+          </article>
+
+          <article class="project-card">
+            <h3>Notification Platform</h3>
+            <div class="pc-block">
+              <div class="pc-head">Problem</div>
+              <p>TMS, LMS, and ERP each needed reliable notifications without each team reinventing delivery.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Highlights</div>
+              <ul>
+                <li>Kafka-driven notification events</li>
+                <li>FCM integration for push delivery</li>
+                <li>Shared adapter-style service boundary</li>
+                <li>Reused across multiple product platforms</li>
+              </ul>
+            </div>
+            <div class="pc-foot"><button class="deep-link" data-target="architecture">View Deep Dive →</button></div>
+          </article>
+
+          <article class="project-card">
+            <h3>AI Incident Investigation Assistant</h3>
+            <div class="pc-block">
+              <div class="pc-head">Problem</div>
+              <p>Investigating production incidents meant manually piecing together logs, errors, and metrics across services.</p>
+            </div>
+            <div class="pc-block">
+              <div class="pc-head">Highlights</div>
+              <ul>
+                <li>Ingests logs, errors, metrics, and service context</li>
+                <li>RAG flow with embeddings stored in Qdrant</li>
+                <li>Retrieves similar past incidents</li>
+                <li>Suggests next checks and remediation direction</li>
+              </ul>
+            </div>
+            <div class="pc-foot"><button class="deep-link" data-target="dd-ai">View Deep Dive →</button></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ARCHITECTURE ============ -->
+    <section id="architecture" aria-labelledby="arch-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Architecture Deep Dives</span>
+          <h2 class="section-title" id="arch-title">How the systems are built</h2>
+          <p class="section-sub">Everything is collapsed by default — expand each section for why it exists, the data flow, and the engineering decisions behind it.</p>
+        </div>
+
+        <div class="accordion">
+
+          <div class="acc-item" id="dd-tms">
+            <button class="acc-head" aria-expanded="false">
+              Transportation Management System
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-inner">
+                <p class="acc-lead">TMS exists to keep trips and shipments moving in real time — from a vehicle starting a trip to operations watching it on a live dashboard. The hard part isn't the workflow itself; it's keeping it fast and cheap as volume grows.</p>
+                <h4>Data Flow</h4>
+                <div class="flow">
+                  <span class="flow-node">API Layer</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Services</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Kafka</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Workers</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Databases</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Dashboards</span>
+                </div>
+                <h4>Major Components</h4>
+                <ul>
+                  <li>API layer for trip, shipment, and vehicle operations</li>
+                  <li>Kafka workers handling async, event-driven movement updates</li>
+                  <li>MongoDB and PostgreSQL/TimescaleDB for live and historical data</li>
+                  <li>Caching layer in front of hot read paths</li>
+                </ul>
+                <h4>Key Decisions & Scale</h4>
+                <ul>
+                  <li>Moved heavy work off the request path into Kafka workers</li>
+                  <li>Profiled and removed a CPU-bound bottleneck: 95% on 16 cores → 50% on 4 cores</li>
+                  <li>Tuned queries and caching to bring API latency from 200ms to 50ms</li>
+                  <li>Designed to absorb 15K+ transactions/day across 24K tracked trips</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item" id="dd-lms">
+            <button class="acc-head" aria-expanded="false">
+              Logistics Management System
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-inner">
+                <p class="acc-lead">LMS is the backbone of order fulfilment — it carries an order from creation all the way to delivery. Because every step feeds the next, the system is built around events so services stay decoupled but consistent.</p>
+                <h4>Data Flow</h4>
+                <div class="flow">
+                  <span class="flow-node">Orders</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Shipment Lifecycle</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Rider Assignment</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Location Tracking</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Notifications</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Operations Dashboard</span>
+                </div>
+                <h4>Major Components</h4>
+                <ul>
+                  <li>Modular backend split across ~10 focused services</li>
+                  <li>Kafka coordinating shipment and assignment events</li>
+                  <li>256GB MySQL as the system of record</li>
+                  <li>Redis caching for frequently read state</li>
+                </ul>
+                <h4>Key Decisions & Scale</h4>
+                <ul>
+                  <li>Event-driven design to keep order state consistent across services</li>
+                  <li>Database optimization on a large production MySQL without downtime</li>
+                  <li>Sustains 30K+ orders/day and ~30K Kafka events/day</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item" id="dd-loc">
+            <button class="acc-head" aria-expanded="false">
+              Location Tracking Platform
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-inner">
+                <p class="acc-lead">Both logistics and transportation need to know where riders and trips are — right now, and historically. Rather than each team solving this separately, location is a shared capability with the right storage for each access pattern.</p>
+                <h4>Data Flow</h4>
+                <div class="flow">
+                  <span class="flow-node">Flutter App</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Tracking Service</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">MongoDB / TimescaleDB</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Assignment Engine</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Dashboard</span>
+                </div>
+                <h4>Major Components</h4>
+                <ul>
+                  <li>Flutter rider app sending location updates</li>
+                  <li>Go tracking service ingesting positions at scale</li>
+                  <li>MongoDB for live geospatial queries; TimescaleDB/PostGIS for history</li>
+                </ul>
+                <h4>Key Decisions & Scale</h4>
+                <ul>
+                  <li>Split live vs historical storage to match very different query patterns</li>
+                  <li>Geospatial queries for proximity, routing, and assignment</li>
+                  <li>Historical tracks support trip reconstruction and audits</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item" id="dd-ai">
+            <button class="acc-head" aria-expanded="false">
+              AI Incident Investigation Assistant
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="acc-inner">
+                <p class="acc-lead">When something breaks in production, most of the time goes into gathering context — logs, errors, metrics, and what's failed before. This assistant pulls that together and points to likely causes, so investigation starts from evidence instead of a blank page.</p>
+                <h4>Data Flow</h4>
+                <div class="flow">
+                  <span class="flow-node">Logs / Errors / Metrics</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Normalization</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Chunking</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Embeddings</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Qdrant</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Retriever</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">LLM</span><span class="flow-arrow">→</span>
+                  <span class="flow-node">Suggested Checks</span>
+                </div>
+                <h4>Major Components</h4>
+                <ul>
+                  <li>Ingestion and normalization of operational signals</li>
+                  <li>Embeddings stored in Qdrant for semantic retrieval</li>
+                  <li>Retriever + LLM that surface similar past incidents</li>
+                </ul>
+                <h4>Key Decisions & Scale</h4>
+                <ul>
+                  <li>Evidence-first: answers stay grounded in real signals, not guesses</li>
+                  <li>Retrieval of similar incidents to reuse past fixes</li>
+                  <li>Cuts repeated manual debugging cycles for the team</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NOTES ============ -->
+    <section id="notes" aria-labelledby="notes-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Engineering Notes</span>
+          <h2 class="section-title" id="notes-title">Writing</h2>
+          <p class="section-sub">Deep dives and lessons from building production backend systems.</p>
+        </div>
+        <div class="notes-grid">
+          <article class="note-card">
+            <span class="note-tag draft">Draft Article</span>
+            <h3>How We Removed 2 Million Background Jobs Per Day</h3>
+            <p>Rethinking a job-heavy pipeline to cut infrastructure load without losing reliability.</p>
+            <div class="chips"><span class="chip">Scalability</span><span class="chip">Optimization</span></div>
+          </article>
+          <article class="note-card">
+            <span class="note-tag note">Engineering Note</span>
+            <h3>Building a Production Location Tracking Platform</h3>
+            <p>Geospatial storage, time-series tracking, and live assignment at logistics scale.</p>
+            <div class="chips"><span class="chip">Geospatial</span><span class="chip">TimescaleDB</span></div>
+          </article>
+          <article class="note-card">
+            <span class="note-tag note">Engineering Note</span>
+            <h3>Kafka Consumer Design Lessons</h3>
+            <p>Patterns and pitfalls for reliable, ordered, high-throughput event processing.</p>
+            <div class="chips"><span class="chip">Kafka</span><span class="chip">Event-Driven</span></div>
+          </article>
+          <article class="note-card">
+            <span class="note-tag draft">Draft Article</span>
+            <h3>Building an AI Assistant for Production Debugging</h3>
+            <p>An evidence-first RAG approach to investigating incidents faster.</p>
+            <div class="chips"><span class="chip">RAG</span><span class="chip">Qdrant</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RESUME ============ -->
+    <section id="resume" aria-labelledby="resume-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Resume</span>
+          <h2 class="section-title" id="resume-title">Profile</h2>
+        </div>
+        <div class="resume-box">
+          <p class="profile">Senior Backend Engineer with 5+ years building distributed systems for high-volume logistics — platforms processing 30K+ orders/day across logistics, transportation, ERP, and operations. Strong in Python, event-driven architecture, database optimization, and production debugging, now extending into AI-assisted backend systems and operational intelligence. Comfortable owning backend platforms end to end.</p>
+          <div class="resume-actions">
+            <a class="btn btn-primary" href="resume.pdf" download>Download Resume ↓</a>
+            <a class="btn btn-ghost" href="https://linkedin.com/in/jayan-vinod" target="_blank" rel="noopener">View LinkedIn</a>
+            <a class="btn btn-ghost" href="https://github.com/YOUR_GITHUB_PLACEHOLDER" target="_blank" rel="noopener">View GitHub</a>
+          </div>
+          <div class="relocate">🌍 Open to international relocation</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section id="contact" aria-labelledby="contact-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Contact</span>
+          <h2 class="section-title" id="contact-title">Let's build something reliable</h2>
+        </div>
+        <div class="contact-box">
+          <div class="contact-grid">
+            <div>
+              <ul class="contact-list">
+                <li><span class="ck">Email</span><span class="cv"><a href="mailto:jayanvinod1510@gmail.com">jayanvinod1510@gmail.com</a></span></li>
+                <li><span class="ck">LinkedIn</span><span class="cv"><a href="https://linkedin.com/in/jayan-vinod" target="_blank" rel="noopener">linkedin.com/in/jayan-vinod</a></span></li>
+                <li><span class="ck">GitHub</span><span class="cv"><a href="https://github.com/YOUR_GITHUB_PLACEHOLDER" target="_blank" rel="noopener">github.com/YOUR_GITHUB_PLACEHOLDER</a></span></li>
+                <li><span class="ck">Location</span><span class="cv">Pune, India</span></li>
+                <li><span class="ck">Open to</span><span class="cv">UK, Ireland, Netherlands &amp; Europe relocation opportunities</span></li>
+              </ul>
+              <div class="relocate">🌍 Open to international relocation</div>
+            </div>
+            <div>
+              <div class="pc-head">Roles I'm interested in</div>
+              <div class="roles">
+                <span class="role-chip">Senior Backend Engineer</span>
+                <span class="role-chip">Backend + AI Engineer</span>
+                <span class="role-chip">Platform Engineer</span>
+                <span class="role-chip">AI Infrastructure Engineer</span>
+              </div>
+              <div style="margin-top:28px;">
+                <a class="btn btn-primary" href="mailto:jayanvinod1510@gmail.com">Reach out →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="wrap">
+      Built by <span class="flogo">Jayan Vinod</span>
+    </div>
+  </footer>
+
+  <script>
+    // Always open at the top of the page on (re)load.
+    // The browser otherwise restores the previous scroll position (or focus, or a
+    // stale #hash), which made the page open scrolled down to the bottom.
+    // In-page nav links and "View Deep Dive" buttons still work — those are click
+    // events during the session, not page loads, so this never interferes.
+    (function () {
+      if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+      function forceTop() {
+        var root = document.documentElement;
+        var prev = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto'; // beat smooth scrolling so the reset is instant
+        window.scrollTo(0, 0);
+        if (document.body) document.body.scrollTop = 0;
+        root.scrollTop = 0;
+        root.style.scrollBehavior = prev;
+      }
+      forceTop();
+      document.addEventListener('DOMContentLoaded', forceTop);
+      window.addEventListener('load', function () {
+        forceTop();
+        // Run once more after layout settles (fonts/images can shift content).
+        requestAnimationFrame(function () { requestAnimationFrame(forceTop); });
+      });
+      window.addEventListener('pageshow', forceTop); // covers back/forward (bfcache)
+    })();
+
+    // Mobile menu
+    (function () {
+      var burger = document.getElementById('hamburger');
+      var links = document.getElementById('navLinks');
+      burger.addEventListener('click', function () {
+        var open = links.classList.toggle('mobile-open');
+        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      links.addEventListener('click', function (e) {
+        if (e.target.tagName === 'A') {
+          links.classList.remove('mobile-open');
+          burger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    })();
+
+    // Accordion
+    (function () {
+      var heads = document.querySelectorAll('.acc-head');
+      heads.forEach(function (head) {
+        head.addEventListener('click', function () {
+          var item = head.parentElement;
+          var body = head.nextElementSibling;
+          var isOpen = item.classList.contains('open');
+          if (isOpen) {
+            item.classList.remove('open');
+            body.style.maxHeight = null;
+            head.setAttribute('aria-expanded', 'false');
+          } else {
+            item.classList.add('open');
+            body.style.maxHeight = body.scrollHeight + 'px';
+            head.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    })();
+
+    // Deep dive links: open target accordion and scroll
+    (function () {
+      var links = document.querySelectorAll('.deep-link');
+      links.forEach(function (link) {
+        link.addEventListener('click', function () {
+          var id = link.getAttribute('data-target');
+          var el = document.getElementById(id);
+          if (!el) return;
+          if (el.classList.contains('acc-item') && !el.classList.contains('open')) {
+            var head = el.querySelector('.acc-head');
+            if (head) head.click();
+          }
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      });
+    })();
+
+    // Metric reveal on scroll
+    (function () {
+      var metrics = document.querySelectorAll('.metric');
+      if (!('IntersectionObserver' in window)) {
+        metrics.forEach(function (m) { m.classList.add('in'); });
+        return;
+      }
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry, i) {
+          if (entry.isIntersecting) {
+            var el = entry.target;
+            var delay = Array.prototype.indexOf.call(metrics, el) % 4 * 80;
+            setTimeout(function () { el.classList.add('in'); }, delay);
+            obs.unobserve(el);
+          }
+        });
+      }, { threshold: 0.15 });
+      metrics.forEach(function (m) { obs.observe(m); });
+    })();
+  </script>
+</body>
+</html>
